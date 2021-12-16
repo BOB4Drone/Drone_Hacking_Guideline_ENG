@@ -1,8 +1,7 @@
 # Drone-Hacking-Guideline
 
-- - -
 
-KITRI BoB 10th Vulnerability Analysis Track: Project 'Vulnerability Study on Drone'
+**KITRI BoB 10th Vulnerability Analysis Track: Project 'Vulnerability Study on Drone'**
 
 > Study period: September 2021 to December 2021 (4 months)
 
@@ -16,6 +15,7 @@ In addition, the patching work on the issue was completed by reporting so that t
 
 ※ Korean documents are [here](https://github.com/BOB4Drone/Drone_Hacking_Guideline)
 
+---
 
 ### Author
 
