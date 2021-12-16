@@ -1,7 +1,7 @@
 
-# 무인항공기(UAV) 소프트웨어  <!-- omit in toc -->
+# Unmanned Aircraft (UAV) Software  <!-- omit in toc -->
 
-## 목차  <!-- omit in toc -->
+## Contents  <!-- omit in toc -->
 
 - [1. FCS(Flight Controller Software)](#1-fcsflight-controller-software)
   - [1.1. 개요](#11-개요)
@@ -35,51 +35,47 @@
 
 ## 1. FCS(Flight Controller Software)
 
-### 1.1. 개요
+### 1.1. Overview
 
-우리는 픽스호크(Pixhawk)라는 Flight Controller(FC) 를 사용한다. 픽스호크란 취미 활동은 물론 개발자를 위한
-공개 하드웨어 프로젝트로, 전 세계 사용자가 이용하고 있으며 개인의 노력에 따라 높은 신뢰도를 갖춘 FC를 구현할 수 있는 시스템이다.
+We use a Flight Controller (FC) called Pixhawk. Fixhawk is an open hardware project for developers as well as hobby activities, a system that is used by users around the world and can implement FC with high reliability according to individual efforts.
 
-먼저 취약점 검증을 위해 시뮬레이터를 이용해 드론의 상태를 확인하려고 했고, 취약점이 발견됐다면 실제 드론을 이용해 교차검증을 하였음.
-우리는 취약점 분석을 할 때 안전 혹은 비용적인 측면을 위해서 PX4에서 제공하는 SITL이라는 드론 시뮬레이션 환경에서 취약점 분석을 진행했고 시뮬레이션에서 발생된 취약점을 실제 드론 기기에 적용하여 취약점이 발현이 되는지 확인하는 2차 검증을 진행했다. 
+First, they tried to check the condition of the drone using a simulator to verify the vulnerability, and if they were found, they used the actual drone to cross-check it. When analyzing vulnerabilities, we conducted a vulnerability analysis in a drone simulation environment called SITL provided by PX4 for safety or cost-effectiveness, and conducted a second test to see if vulnerabilities generated from the simulation were manifested by applying them to the actual drone devices.
 
+### 1.2. PX4 / Ardupilot Structure
 
-### 1.2. PX4 / Ardupilot 구조
+The status of drones is updated through an asynchronous messaging API called uORB.
 
-uORB라는 비동기 메시징 API를 통해 드론의 상태를 업데이트 한다.
-
-GCS와 드론은 MAVLink 프로토콜을 이용해서 통신하고 PX4 플랫폼을 통해 MAVLink의 data 부분인 PAYLOAD를 처리하고 처리된 값을 uORB의 Topics에 Publish하고 드론은 업데이트 된 Topics 값을 Subscribe 하여 드론의 상태를 업데이트 한다. 
+GCS and drones communicate using MAVLink protocol, process PAYLOAD, which is the data part of MAVLink through PX4 platform, and publish processed values to uORB's Topics, and the drone updates the status of the drones by subscribing updated Topics values.
 
 ![img_01](../img/uorb.png)
 
-#### 1.2.1. MAVLink 프로토콜
+#### 1.2.1. MAVLink Protocol
 
-MAVLink란 'Micro Air Vehicle Link'의 약어이며 소형 무인기와의 통신을 위해 만들어진
-경량 통신 프로토콜(Communication Protocol) 로 안정된 데이터 교환을 제공한다.   
-여러 무인 장치(UAV, Unmanned Vehicle) 과 GCS에 광범위하게 적용된다.   
-이 프로토콜을 이용해 GCS를 구성할 수 있으며 이것으로 픽스호크의 모든 부분을 제어하고 정보를 얻을 수 있다.   
+MAVLink is an abbreviation for 'Micro Air Vehicle Link' and provides a stable data exchange with a lightweight communication protocol designed to communicate with small drones.
+Widely applicable to multiple unmanned devices (UAV, Unmanned Vehicle) and GCS.
+GCS can be configured using this protocol, which can control all parts of the Fixhawk and obtain information.
 
-버전 2와 버전 1이 존재하며 하위 호환성을 갖기에 상위 버전에서 하위 버전 이용이 가능하다.   
+Version 2 and Version 1 exist, and lower versions are available in higher versions because of their backward compatibility.
 
 **MAVLink v1**
 
-6개의 헤더, 체크섬, 그리고 1개의 데이터로 이루어진다.   
+It consists of six headers, checksums, and one data.
 
 ![img_mav1](../img/MAVLink-1.png)
 
 
 **MAVLink v2**
 
-8개의 헤더, 체크섬, 시그니처, 데이터로 이루어진다.   
+It consists of eight headers, checksums, signatures, and data.
 
 ![img_mav2](../img/MAVLink-2.png)
 
-구조
+Structure
 
-* Packet start marker (STX): 새 패킷 및 프로토콜 버전의 시작
-* Payload length (LEN): 페이로드 길이
-* Incompatibility Flags: 패킷을 처리할 수 있도록 지원해야 하는 기능을 나타내는데 사용
-* Compatibility Flags: MAVLink 라이브러리가 기능을 이해하지 못하더라도 패킷을 처리하는 것을 방해하지 않음을 나타내는 데 사용
+* Packet start marker (STX): Start of a new packet and protocol version
+* Payload length (LEN): Payload length
+* Incompatibility Flags: Used to indicate the ability to support packet processing
+* Compatibility Flags: Used to indicate that the MAVLink library does not interfere with the processing of packets even if it does not understand the functionality.
 * Packet Sequence (SEQ): sequence로 패킷 손실 탐지
 * SYSTEM_ID (SYS): 여러 플랫폼이 동일한 네트워크 사용 가능하게 ID 부여
 * Component ID (COMP): 한 플랫폼에서 여러 component 받게 ID 부여
