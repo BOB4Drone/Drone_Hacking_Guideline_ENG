@@ -6,7 +6,7 @@
 - [1. Introduction](#1-introduction)
   * [1.1. GCS Concepts](#11-gcs-concepts)
   * [1.2. GCS Functions](#12-gcs-functions)
-  * [1.3. 드론별 GCS 현황](#13-----gcs---)
+  * [1.3. Status of GCS by drone](#13-status-of-gcs-by-drone)
   * [1.4. ELF vs AppImage](#14-elf-vs-appimage)
 - [2. Analytical Environment](#2-analytical-environment)
   * [2.1. Build QGC](#21-build-qgc)
@@ -22,7 +22,7 @@
     + [3.1.2. QGC GUI Functional Auditing](#312-qgc-gui-functional-auditing)
   * [3.2. Vulnerability Analysis through Fuzzing](#32-vulnerability-analysis-through-fuzzing)
     + [3.2.1. Mavlink Fuzzer](#321-mavlink-fuzzer)
-    + [3.2.2. QGC With AFL++](#322-qgc-with-afl--)
+    + [3.2.2. QGC With AFL++](#322-qgc-with-afl)
 
 ## 1. Introduction
 
