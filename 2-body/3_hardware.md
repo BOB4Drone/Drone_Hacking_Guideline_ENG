@@ -28,7 +28,7 @@ In this project, vulnerability analysis was conducted on four sensors as follows
 
 In this project, six possible attacks were selected for four sensors. The attack was screened through the analysis of the existing paper/conference presentation/technical report, and four of the total eight attacks were successful.
 
-![image](https://user-images.githubusercontent.com/91944211/145883340-f0a455fb-bf4e-4716-ac81-4e713d2bc0eb.png)
+![image](https://user-images.githubusercontent.com/91944211/146407880-4976eeff-88f4-46cd-aad7-630ba3eb9003.png)
 
 
 ## 1. GPS Module
