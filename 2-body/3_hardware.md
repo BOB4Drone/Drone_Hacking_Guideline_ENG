@@ -20,7 +20,7 @@
   - [4.2. Vulnerability Analysis Methodology](#42-vulnerability-analysis-methodology)
 
 
-## outline
+## utline
 
 In this project, vulnerability analysis was conducted on four sensors as follows.
 
