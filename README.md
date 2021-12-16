@@ -12,7 +12,7 @@ We shared the results of our team's analysis and disclosed the records to lower 
 Vulnerability analysis experiments were conducted on drone software with high market share, and significant vulnerabilities were identified through this.
 In addition, the patching work on the issue was completed by reporting so that the relevant content could be taken action quickly.
 
-※ 4DFUZZER[(PublicRepository)](https://github.com/BOB4Drone/4D-Fuzzer)
+※ 4DFUZZER [(PublicRepository)](https://github.com/BOB4Drone/4D-Fuzzer)
 
 ※ Korean documents are [here](https://github.com/estrogenic/bob-4-drone/blob/master/Github-Flavored%20Markdown.md)
 
