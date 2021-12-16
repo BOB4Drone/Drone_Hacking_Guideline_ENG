@@ -1,7 +1,7 @@
 
 # GCS(Ground Control System) <!-- omit in toc -->
 
-## 목차 <!-- omit in toc -->
+## Table of Contents <!-- omit in toc -->
 
 - [1. 개요](#1-개요)
     - [1.1. GCS 개념](#11-GCS-개념)
@@ -26,16 +26,16 @@
 
 ## 1. 개요
 
-### 1.1. GCS 개념
+### 1.1. GCS Concepts
 
-GCS란 지상 관제 시스템(Ground Control Station)의 줄임말으로 드론의 제어, 미션 등 다양한 운영을 하기 위하여 만든 소프트웨어이다. (PX4에서는 [QGroundControl](https://github.com/mavlink/qgroundcontrol)의 사용이 권장된다.)
+GCS, short for Ground Control Station, is software designed for various operations such as drone control and mission. ([QGroundControl](https://github.com/mavlink/qgroundcontrol) is recommended in PX4)
 
 
-### 1.2. GCS 기능
+### 1.2. GCS Functions
 
-  - 자율비행 및 실시간 비행경로 변경 관제 가능
-  - 지도 데이터 처리, 비행경로 사전 분석 기능
-  - 지오펜스 기능 (필요 시 비행금지 지역 생성)
+  - Autonomous flight and real-time flight path control.
+  - Map data processing, flight route analysis,
+  - Geofence (If necessary, create a no-fly zone)
 
 ### 1.3. 드론별 GCS 현황
 |ardupilot|px4|dji|
@@ -44,107 +44,107 @@ GCS란 지상 관제 시스템(Ground Control Station)의 줄임말으로 드론
 
 
 ### 1.4. ELF vs AppImage
-우리는 QGC의 취약점 분석에 앞서 메모리 보호기법을 확인하기 위해 Release파일인 [QGroundControl.AppImage](https://docs.qgroundcontrol.com/master/en/releases/release_notes.html)를 checksec.sh을 이용해 확인하였다.   
+Prior to analyzing vulnerabilities in QGC, we identified the Release file [QGroundControl.AppImage](https://docs.qgroundcontrol.com/master/en/releases/release_notes.html) using checksec.sh to check memory protection techniques.  
 ![Untitled](https://user-images.githubusercontent.com/91944211/145853059-f851a947-f62a-4850-8d73-2fb56cf68cea.png)
 
-NX를 제외한 모든 보호기법이 꺼져있는것을 볼 수 있는데, 이는 AppImage확장자의 특성 때문이다.
+All protection techniques except NX can be seen to be turned off, due to the nature of AppImage extensions.
 ![Untitled (1)](https://user-images.githubusercontent.com/91944211/145853378-2a6ecd6c-15ab-4e3a-b997-85b34383104e.png)
 
-다음 그림과 같이 AppImage는 실행 바이너리와 종속성 충족을 위한 라이브러리들이 squashfs형태로 함께 저장되어 있다. 따라서 우리는 `sudo mount ./qgroundcontrol.AppImage mountpoint -o offset=188392` 명령어를 통해 실제로 빌드된 바이너리를 확인하였고, 다시 메모리 보호기법을 확인했다.   
+As shown in the following figure, AppImage is stored together in the form of squashfs with the execution binaries and libraries to meet dependencies. So we're going to... `sudo mount ./qgroundcontrol.AppImage mountpoint -o offset=188392`  I checked the binaries that were actually built through the command, and again the memory protection techniques. 
 ![Untitled (2)](https://user-images.githubusercontent.com/91944211/145854132-68ed37d7-623e-47ce-803f-bf079a7cef12.png)
 ![Untitled (3)](https://user-images.githubusercontent.com/91944211/145854403-426d88d4-87e9-46fb-b1d0-ef62d9f02d1d.png)
 
-## 2. 분석 환경 구축
+## 2. Analytical Environment
 
-### 2.1. QGC 빌드
+### 2.1. Build QGC
 
-#### 2.1.1. QT 설치
+#### 2.1.1. Installing QT
 
-QGC는 QT 라이브러리를 Cross-Platform 라이브러리로 사용하기 때문에 QT를 다운받아주고 QT Creator를 통해 컴파일한다.
+Since QGC uses the QT library as a Cross-Platform library, it downloads QT and compiles it through QT Creator.
 
-1. [Qt 온라인 설치 프로그램](https://www.qt.io/download-open-source) 다운로드 및 실행
+1. Download and run the [Qt installer](https://www.qt.io/download-open-source)
 
-2. QT 버전(5.15.2) 및 구성 요소 설정
+2. QT version (5.15.2) and component settings
 ![image](https://user-images.githubusercontent.com/91944211/145797702-876c007d-83f1-481f-a01d-ef3b9fded745.png)
 
-3. 추가 패키지 설치
+3. Install additional packages
     ```
     sudo apt-get install speech-dispatcher libudev-dev libsdl2-dev patchelf
     ```
-4. 서브모듈을 포함해 레포지토리를 클론
+4. Clone the repository, including the submodule
     ```
     git clone --recursive -j8 https://github.com/mavlink/qgroundcontrol.git
     ```
-2. 서브모듈 업데이트
+2. Submodule Update
     ```
     git submodule update --recursive
     ```
-#### 2.1.2. GUI를 이용한 빌드
+#### 2.1.2. Build using GUI
 
-1. QT Creator로 qgroundcontrol project open
+1. qgroundcontrol project open
 
-2. 망치 모양을 클릭해 빌드 진행
+2. Click on the hammer to proceed with the build
 
     ![image](https://user-images.githubusercontent.com/91944211/145805224-3b2287ba-9d1f-4baa-85c4-71be54e58e66.png)
 
-#### 2.1.3. CLI를 이용한 빌드
-1. makefile 생성
+#### 2.1.3. Build using CLI
+1. Create makefile 
     ```
     cd qgroundcontrol
     mkdir build
     cd build
     ~/Qt/5.15.2/gcc_64/bin/qmake ../
     ```
-2. make를 통한 빌드
+2. Build 
     ```
     make
     ```
-### 2.2. Sanitizer 사용
+### 2.2. Sanitizer
 
-#### 2.2.1. GUI를 이용한 Sanitizer 사용
+#### 2.2.1. Using the Sanitizer with the GUI
 
-1. qt creator에서 Projects > Build > Build Steps > qmake > Additional arguments 진입
+1. Projects > Build > Build Steps > qmake > Additional arguments
 
-2. 아래와 같아 Argument 수정
+2. Modify Argument as below
 
     ![image](https://user-images.githubusercontent.com/91944211/145806129-c2a81e84-2da1-4b68-9b99-10b8a1663711.png)
 
 
-#### 2.2.2. CLI를 이용한 Sanitizer 사용
+#### 2.2.2. Using Sanitizer with CLI
 
-1. makefile 생성
+1. Create makefile
     ```
     cd qgroundcontrol
     mkdir build
     cd build
     ~/Qt/5.15.2/gcc_64/bin/qmake ../
     ```
-2. makefile의 CC, CXX, LINK에 Sanitizer 옵션 추가
+2. Add sanitizer on makefile's CC, CXX, LINK
 
     ![image](https://user-images.githubusercontent.com/91944211/145806760-400381d7-a375-491d-b071-091c9bef09e5.png)
 
 
-## 3. 취약점 분석 방법론
+## 3. Vulnerability Analysis Methodology
 
-### 3.1. 소스코드 오디팅을 통한 취약점 분석
+### 3.1. Vulnerability Analysis through Source Code Auditing
 
-#### 3.1.1. MAVLINK Handle 함수 오디팅
-QGC 소스 디렉토리에서 `src/Vehicle/Vehicle.cc`의 [593line](https://github.com/mavlink/qgroundcontrol/blob/9718d3c71a57034fdaedc1a0aea355c4fd6c2506/src/Vehicle/Vehicle.cc#L593)를 보면 Vehicle::_mavlinkMessageReceived() 라는 함수에서 mavlink packet을 핸들링한다. 따라서 해당 함수의 흐름을 따라가며 오디팅을 진행하였다.
+#### 3.1.1. MAVLINK Handle Function Auditing
+From the QGC source directory `src/Vehicle/Vehicle.cc`If you look at the [593line](https://github.com/mavlink/qgroundcontrol/blob/9718d3c71a57034fdaedc1a0aea355c4fd6c2506/src/Vehicle/Vehicle.cc#L593) of , it handles the mavlink packet in a function called Vehicle:::_mavlinkMessageRecovered(). Therefore, we audited according to the flow of the function.
 
 
-#### 3.1.2. QGC GUI 기능 함수 오디팅
-QGC 프로그램에서 GUI로 구현된 기능들의 함수를 분석하여 취약점을 찾을 수 있었다. 
+#### 3.1.2. QGC GUI Functional Auditing
+In the QGC program, the functions implemented with GUI were analyzed to find vulnerabilities.
 - [#Issue10035](https://github.com/mavlink/qgroundcontrol/issues/10035) 
 - [#Issue10059](https://github.com/mavlink/qgroundcontrol/issues/10059)
 - [#Issue10068](https://github.com/mavlink/qgroundcontrol/issues/10068)
 
-### 3.2. Fuzzing을 통한 취약점 분석
+### 3.2. Vulnerability Analysis through Fuzzing
 
 #### 3.2.1. Mavlink Fuzzer
-QGC도 PX4와 같은 mavlink protocol을 이용하기 때문에 [기존에 만든 퍼저](https://github.com/BOB4Drone/4D-Fuzzer)를 이용해 3개의 함수에서 취약점을 찾을 수 있었다.   
+Since QGC also uses the same mavlink protocol as PX4, it was able to find vulnerabilities in the three functions using the [fuzzer](https://github.com/BOB4Drone/4D-Fuzzer) that was previously made.
 
 #### 3.2.2. QGC With AFL++
-코드커버리지 기반의 퍼징을 위해 AFL++을 사용하였다. 먼저 AFL++은 기본적으로 파일 I/O를 이용해 퍼징을 수행하기 때문에 `afl-forkserver.c`를 다음과 같이 UDP를 사용하도록 바꿔주었다.   
+We used AFL++ for code coverage-based fuzzing. First, since AFL++ basically performs purging using file I/O, we changed `afl-forkserver.c` to use UDP as follows.   
 ```
 int client_socket;
     struct sockaddr_in serverAddress;
@@ -173,31 +173,31 @@ int client_socket;
     // socket close
     close(client_socket);
 ```   
-이후 Makefile을 수정해 컴파일러를 afl-g++로 바꿔주어 퍼징을 진행했다. 하지만 이렇게 진행할경우 세 가지 문제점이 발생한다.   
-1. QGC가 켜지기 전에 AFL에서 먼저 패킷을 보낸다.
-2. HeartBeat를 받지않으면 다른 패킷을 받지 않는다.
-3. AFL은 프로그램이 종료되어야 계측을 할 수 있다.
+Afterwards, he modified Makefile and changed compiler to apl-g++ to conduct purging. However, three problems arise if we proceed this way.
+1. AFL sends packets first before QGC is turned on.
+2. If you do not receive Heartbeat, you do not receive other packets.
+3. AFL can be measured only when the program is terminated.
 
-우리는 문제들을 해결하기 위해 다음과 같은 방법을 이용했다.   
+We used the following methods to solve problems.   
 
 ![Untitled Diagram drawio (1) (1)](https://user-images.githubusercontent.com/91944211/145868099-68bcb159-9b80-442d-838c-db0df9d6bfa5.png)   
-먼저 첫번째 문제 해결을 위해 다음과 같은 UDP Server의 중계를 거쳐 QGC의 소켓이 로드된 후에 하트비트 패킷과 생성된 패킷을 보내도록 하였다.   
+For the first troubleshooting, the following UDP Server broadcasts were required to load the socket of QGC before sending heartbeat packets and generated packets.   
 
 ```
 if (heatbeatFlag){exit(0);}
 heatbeatFlag = 1
 ```
-다음으로 두번째와 세번째 문제 해결을 위해 src/Vehicle/Vehicle.cc에서 `_uas->receiveMessage(message);` 밑에 해당 코드를 추가하여 하트비트 및 생성된 패킷을 받으면 QGC가 종료되도록 하였다.
+Next, to solve the second and third problems, `_uas->receiveMessage(message)` at src/Vehicle/Vehicle.cc; the code was added below to terminate the QGC when receiving the heartbeat and the generated packet.
 
 ![Untitled (5)](https://user-images.githubusercontent.com/91944211/145869720-87e71283-3b88-4a4b-92d4-c45491cb6555.png)   
-위의 두가지 방법으로 퍼징을 진행한 결과 다음과 같이 120개의 uniq행을 찾을 수 있었지만, 크래시는 나오지 않았다. 왜냐하면 해당 방식은 full packet을 뮤테이트 하기 때문에 mavlink의 crc검증 루틴을 통과할 수 없다.   
+As a result of fuzzing in the above two ways, 120 uniq hands were found as follows, but no crash came out. Because the method mutates the full packet, it cannot pass through the crc verification routine of mavlink.  
 
 ![GCS_fuzzing drawio](https://user-images.githubusercontent.com/91944211/145870675-c787b919-a846-40fa-afb0-906f3c042b93.png)   
-때문에 우리는 UDP 중계서버의 코드를 수정해 다음과 같은 구조로 퍼징을 다시 진행했다.   
-해당 구조는 AFL++에서 Mavlink의 'payload' 부분만 뮤테이트해, UDP Server에서 CRC값이 포함된 full packet을 전송한다.   
+Therefore, we modified the code of the UDP relay server and proceeded with fuzzing again with the following structure.   
+The structure mutates only the 'payload' part of Mavlink in AFL++ and transmits a full packet containing CRC values from the UDP server.
 
 ![Untitled (6)](https://user-images.githubusercontent.com/91944211/145870720-2ba6f5fe-1ce6-47aa-a177-1ec67268d062.png)   
-그 결과 다음과 같이 많은 crash를 얻을 수 있었다. 해당 crash들은 모두 위의 4dfuzzer에서 찾은 취약점이었지만, 해당 방식을 응용해 future work로써 유용히 쓰일 수 있을것으로 보인다.
+As a result, many crashes could be obtained as follows. All of these crashes were vulnerabilities found in the 4dfuzzer above, but it seems that they can be useful as future work by applying them.
 
 
 ## 카테고리 <!-- omit in toc -->
