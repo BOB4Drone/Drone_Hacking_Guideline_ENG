@@ -26,7 +26,7 @@ In addition, the patching work on the issue was completed by reporting so that t
 - Mentee: PM Lee Junoh, Kyung Kyuchang, Kim Donghyun, Ryu Hyeongho, Choi Soobin, Kim Jisoo.
 
 
-## Category <!-- omit in toc -->
+## Table of Contents <!-- omit in toc -->
 
 ### Introduction <!-- omit in toc -->
    1. [Research background and goal](/1-intro/about-drone-research.md)
