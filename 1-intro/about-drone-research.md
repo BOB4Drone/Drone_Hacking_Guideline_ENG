@@ -111,7 +111,7 @@ The new vulnerability search verifies the vulnerability by attempting an attack 
 
 ---
 
-## Table of Contents <!-- omit in toc -->
+## Category <!-- omit in toc -->
 
 ### Introduction <!-- omit in toc -->
    1. [Research background and goal](/1-intro/about-drone-research.md)
