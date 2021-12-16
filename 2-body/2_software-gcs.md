@@ -8,7 +8,7 @@
   * [1.2. GCS Functions](#12-gcs-functions)
   * [1.3. Status of GCS by drone](#13-status-of-gcs-by-drone)
   * [1.4. ELF vs AppImage](#14-elf-vs-appimage)
-- [2. Analyze Environment](#2-analytical-environment)
+- [2. Analyze Environment](#2-analyze-environment)
   * [2.1. Build QGC](#21-build-qgc)
     + [2.1.1. Installing QT](#211-installing-qt)
     + [2.1.2. Build using GUI](#212-build-using-gui)
