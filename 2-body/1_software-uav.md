@@ -1,142 +1,143 @@
+# 무인항공기(UAV) 소프트웨어  <!-- omit in toc -->
 
-# Unmanned Aircraft (UAV) Software  <!-- omit in toc -->
-
-## Contents  <!-- omit in toc -->
+## 목차  <!-- omit in toc -->
 
 - [1. FCS(Flight Controller Software)](#1-fcsflight-controller-software)
-  - [1.1. 개요](#11-개요)
-  - [1.2. PX4 / Ardupilot 구조](#12-px4--ardupilot-구조)
-    - [1.2.1. MAVLink 프로토콜](#121-mavlink-프로토콜)
+  - [1.1. Introduction](#11-Introduction)
+  - [1.2. PX4 / Ardupilot Structure](#12-px4--ardupilot-Structure)
+    - [1.2.1. MAVLink Protocol](#121-mavlink-Protocol)
     - [1.2.2. uORB API](#122-uorb-api)
-  - [1.3. PX4 빌드](#13-px4-빌드)
-    - [1.3.1. 직접 빌드하기](#131-직접-빌드하기)
-    - [1.3.2. 도커 활용하기](#132-도커-활용하기)
+  - [1.3. PX4 Build](#13-px4-Build)
+    - [1.3.1. PX4 CLI Build](#131-PX4-CLI-Build)
+    - [1.3.2. PX4 Docker Build](#132-PX4-Docker-Build)
   - [1.4. DFD](#14-dfd)
     - [1.4.1. Level 0](#141-level-0)
     - [1.4.2. Level 1](#142-level-1)
     - [1.4.3. Level 2 (PX4 MicroServices)](#143-level-2-px4-microservices)
-  - [1.5. 취약점 분석 방법론](#15-취약점-분석-방법론)
-    - [1.5.1. 퍼저 개발](#151-퍼저-개발)
-      - [1.5.1.1. Input Vector 설정](#1511-input-vector-설정)
-      - [1.5.1.2. MAVLink Fuzzer를 위한 데이터 수집](#1512-MAVLink-Fuzzer를-위한-데이터-수집)
-      - [1.5.1.3. Fuzzing 환경](#1513-fuzzing-환경)
+  - [1.5. Vulnerability Analysis Methodology](#15-Vulnerability-Analysis-Methodology)
+    - [1.5.1. Developing a Fuzzer](#151-Developing-a-Fuzzer)
+      - [1.5.1.1. Setting Input Vector](#1511-Setting-Input-Vector)
+      - [1.5.1.2. Data Collection For MAVLink Fuzzer](#1512-Data-Collection-For-MAVLink-Fuzzer)
+      - [1.5.1.3. Fuzzing Environment](#1513-fuzzing-Environment)
       - [1.5.1.4. Mavlink Fuzzer](#1514-mavlink-fuzzer)
       - [1.5.1.5. Microservice Fuzzer](#1515-microservice-fuzzer)
       - [1.5.1.6. PX4 with AFL](#1516-px4-with-afl)
       - [1.5.1.7. GPS Fuzzer](#1516-gps-fuzzer)
-    - [1.5.2. 시리얼 통신을 이용한 퍼징](#152-시리얼-통신을-이용한-퍼징)
+    - [1.5.2. Fuzzing using serial communication.
+](#152-Fuzzing-using-serial-communication.)
   - [1.6. 참조](#16-참조)
 - [2. Mavros](#2-mavros)
-  - [2.1. 개요](#21-개요)
-  - [2.2. 분석 환경 구축](#22-분석-환경-구축)
-  - [2.3. 취약점 분석 방법론](#23-취약점-분석-방법론)
-
+  - [2.1. Introduction](#21-Introduction)
+  - [2.2. Analysis Environment Setting.](#22-Analysis-Environment-Setting.)
+  - [2.3. Vulnerability analysis methodology.](#23-Vulnerability-analysis-methodology.)
+    -[2.3.1 Vulnerability analysis through fuzzing](#231-Vulnerability-analysis-through-fuzzing)
 - - -
 
 ## 1. FCS(Flight Controller Software)
 
-### 1.1. Overview
+### 1.1. Introduction
 
-We use a Flight Controller (FC) called Pixhawk. Fixhawk is an open hardware project for developers as well as hobby activities, a system that is used by users around the world and can implement FC with high reliability according to individual efforts.
+We use a Flight Controller (FC) called Pixhawk. Fix Hawk is a hobby for developers.
+It is a public hardware project that is used by users around the world and can implement FC with high reliability according to individual efforts.
 
-First, they tried to check the condition of the drone using a simulator to verify the vulnerability, and if they were found, they used the actual drone to cross-check it. When analyzing vulnerabilities, we conducted a vulnerability analysis in a drone simulation environment called SITL provided by PX4 for safety or cost-effectiveness, and conducted a second test to see if vulnerabilities generated from the simulation were manifested by applying them to the actual drone devices.
+When analyzing vulnerabilities, we conducted vulnerability analysis in a drone simulation environment called SITL provided by PX4 for safety or cost, and conducted a second verification to see if vulnerabilities were expressed by applying them to actual drone devices.
+
 
 ### 1.2. PX4 / Ardupilot Structure
 
-The status of drones is updated through an asynchronous messaging API called uORB.
+Update the status of the drone through an asynchronous messaging API called uORB.
 
-GCS and drones communicate using MAVLink protocol, process PAYLOAD, which is the data part of MAVLink through PX4 platform, and publish processed values to uORB's Topics, and the drone updates the status of the drones by subscribing updated Topics values.
+GCS and drones communicate using the MAVLink protocol, process PAYLOAD, the data part of MAVLink, and publish the processed value to the Topics of uORB to update the drone's status.
 
 ![img_01](../img/uorb.png)
 
 #### 1.2.1. MAVLink Protocol
 
-MAVLink is an abbreviation for 'Micro Air Vehicle Link' and provides a stable data exchange with a lightweight communication protocol designed to communicate with small drones.
-Widely applicable to multiple unmanned devices (UAV, Unmanned Vehicle) and GCS.
-GCS can be configured using this protocol, which can control all parts of the Fixhawk and obtain information.
+MAVLink stands for "Micro Air Vehicle Link" and was created for communication with small drones.
+It provides stable data exchange with a lightweight communication protocol.
+It is widely applied to several unmanned vehicles (UAVs) and GCSs.
+GCS can be configured using this protocol, which allows you to control all parts of the fixhawk and obtain information.
 
-Version 2 and Version 1 exist, and lower versions are available in higher versions because of their backward compatibility.
+MAVLink Protocol has version 2 and version 1 and has lower compatibility, so lower versions can be used in higher versions.  
 
 **MAVLink v1**
 
-It consists of six headers, checksums, and one data.
+MAVLink protocol version 1 consists of 6 headers, 1 checksum, and 1 data.   
 
 ![img_mav1](../img/MAVLink-1.png)
 
 
 **MAVLink v2**
 
-It consists of eight headers, checksums, signatures, and data.
+MAVLink protocol version 2 consists of eight headers, checksums, signatures, and data.
 
 ![img_mav2](../img/MAVLink-2.png)
 
-Structure
+구조
 
-* Packet start marker (STX): Start of a new packet and protocol version
-* Payload length (LEN): Payload length
-* Incompatibility Flags: Used to indicate the ability to support packet processing
-* Compatibility Flags: Used to indicate that the MAVLink library does not interfere with the processing of packets even if it does not understand the functionality.
-* Packet Sequence (SEQ): Used to trace packet loss detection
-* SYSTEM_ID (SYS): Used to provide multiple for platforms to use the same network availability ID
-* Component ID (COMP): Used to identify multiple components on one platform
-* Message ID (MSG): Identifies the message being sent. Define payload and decoding methods
-* DATA (PAYLOAD): Actual data values transmitted
-* Checksum: Checksum data for error detection
-* Signature: Signature for Integrity Verification
+* Packet start marker (STX): Magic value indicating the starting point of the packet.
+* Payload length (LEN): PAYLOAD Length
+* Incompatibility Flags: It is used to indicate a function that needs to be supported to process packets
+* Compatibility Flags: Use to indicate that the MAVLink library does not interfere with processing packets even if it does not understand the function.
 
-**Differences Between v2 and v1**
+* Packet Sequence (SEQ): MAVLink Packet sequence
+* SYSTEM_ID (SYS): Set the SYS ID so that multiple platforms can use the same network.
+* Component ID (COMP): Set the component ID to receive multiple components on one platform.
+* Message ID (MSG): MAVLink Packet's mission-setting value.
+* DATA (PAYLOAD): Data values according to the actual MSG_ID transmitted.
+* Checksum: Checksum
+* Signature: Signature for integrity verification
 
-* 24bit message ID - 16 million+ unique message definitions allowed (MAVLink 1 is limited to 256)
-* Added SIGNATURE value to validate packet integrity
-  * However, there is no verification process for SIGNATURE in PX4. (No verification of integrity)
+**The difference between v2 and v1.**
+
+* MAVLink version 2 has an MSG_ID size of 3 bytes. - Allow more than 16 million unique message definitions (MAVLink 1 is limited to 256)
+* Added SIGNATURE value to verify packet integrity.
+  * However, PX4 does not have a process of verifying SIGNATURE. (No integrity verification.)
 
 #### 1.2.2. uORB API
 
-uORB is an abbreviation for Micro Object Request Broker and is one of the asynchronous messaging IPC communication techniques.   
-Works as a Public-Subscribe model.
+uORB is short for Micro Object Request Broker and is one of the asynchronous messaging IPC communication techniques.
+   
+It works through Public-Subscription.
 
 
 
-**uORB Messaging terms**
-* Node : uORB message exchange subject. Also referred to as Process.
-* Topic : A unit of information exchanged between two nodes.
-* Publish : The process of sharing one Topic.
-* Subscribe : The process of requesting one Topic.
-* Advertise : If a node publish for the first time, the node asks the Master Node. This process is called Advertising.
+**UORB messaging. Organize the terms.**
+* Node : Subject to exchange uORB messages. It's also called Process.
+* Topic : Unit of information exchanged between the two nodes.
+* Publish : The process of updating the value of Topic by raising the value to one Topic.
 
+* Subscribe : The process of updating by importing values for one Topic.
+* Advertise : When you first publish, you bring the list to publish-subscribe to Master Node, which is called Advertising.
+
+
+```Ex) First, get a list of data to publish-subscribe to Masternode, and then calculate the value of PAYLOAD according to MAVLink's msgID, publish the calculated value to Topics, and the module updates the value of uORB by Subscripting the published value to Topics.```
 ![img_uorb1](../img/uorb-1.png)
-
-
-### 1.3. Building PX4
-
-#### 1.3.1. Building from scratch (w/ source code)
-
-**Downloading PX4**
-
-You can download the PX4 source code through the following command. 
+### 1.3. PX4 Build
+#### 1.3.1. PX4 CLI Build
+**PX4 Download**
+The PX4 source code may be downloaded through the following instructions.   
 ```
 $ git clone https://github.com/PX4/PX4-Autopilot.git --recursive
 ```
-
-To run the simulator, you must pre-install the execution environment with the script below.   
-Jdk, Python, etc. shall be installed.   
+To run the simulator, you must pre-install the execution environment with the script below.
+jdk, Python, etc. should be installed.
+  
 ```
 $ bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
 ```
-
-Then, designate the desired simulator and proceed with the make.   
-Simulators include jMAVSim and Gazbo, and official documents recommend Gazbo.   
+이후 원하는 시뮬레이터를 지정해서 make를 진행한다.   
+시뮬레이터는 jMAVSim, Gazebo 등이 있으며 공식 문서는 Gazebo를 추천한다.   
 ```
 Start JMavSim with Address Sanitizer(default vehicle model)
 $ make px4_sitl jmavsim PX4_BUILD_TYPE=0 PX4_ASAN=1
 ```
+#### 1.3.2. PX4 Docker Build
+PX4 is provided with a pre-built container with all development environments set. If you use [the container provided](https://github.com/PX4/PX4-containers/blob/master/README.md#container-hierarchy), you can easily attempt purging.
+First, the docker must be installed with the instructions below.
+Next, execute an instruction to set the authority.
 
-#### 1.3.2. Building with a docker
 
-PX4 is provided with pre-built containers with all development environments set up. Purging attempts can be made easily using the [container provided](https://github.com/PX4/PX4-containers/blob/master/README.md#container-hierarchy)
-
-You must first install the docker with the command below.      
-Next, execute the command to set permissions.      
 ```
 $ curl -fsSL get.docker.com -o get-docker.sh
 $ sudo sh get-docker.sh
@@ -146,17 +147,15 @@ $ sudo groupadd docker
 Add your user to the docker group.
 $ sudo usermod -aG docker $USER
 ```
-
-Download the source code from the host computer using the command below.
+Download the source code from the host computer with the command below.
 ```
 $ mkdir src
 $ cd src
 $ git clone https://github.com/PX4/PX4-Autopilot.git
 $ cd PX4-Autopilot
 ```
-
-Run PX4 using the script provided to enable the use of PX4.      
-Alternatively, command lines can be used directly with the bash option.        
+PX4 is executed using a script provided to use the container.
+Alternatively, you can directly use the command line with the bash option. 
 ```
 build SITL
 $ ./Tools/docker_run.sh 'make px4_sitl_default'
@@ -164,127 +163,90 @@ $ ./Tools/docker_run.sh 'make px4_sitl_default'
 start a bash session
 $ ./Tools/docker_run.sh 'bash'
 ```
+We are providing pre-made Docker files for Fuzzing.
 
-We're trying to provide a pre-created docker file for fuzzing.
-See [here](../README.md) for more information
+For more information, refer to [here](../README.md).
 
 ### 1.4. DFD
-
 #### 1.4.1. Level 0
-레벨 0은 FCS와 사용자의 주요 데이터 흐름을 간략히 나타낸다.   
-
+Level 0 briefly represents the FCS and the user's main data flow.
 ![img_02](../img/dfd-0.png)
-
 #### 1.4.2. Level 1
-레벨 1은 드론과 GCS로 영역을 구분하여 구성한다.   
-드론 부분은 취약점 분석에 이용했던 포트만 나타낸다.   
-
+Level 1 is configured by dividing the area into a drone and a GCS.
+The drone part represents only the ports used for vulnerability analysis. 
 ![img_03](../img/dfd-1.png)
-
 #### 1.4.3. Level 2 (PX4 MicroServices)
-레벨 2 서비스 버전은 PX4 내부에서 마이크로서비스가 어떻게 처리되는지 정리한다.   
-
-해당 부분들을 모두 분석했으며 이 부분을 표적으로 하는 새로운 퍼저를 개발했다.   
-
+The level 2 service version organizes how the microservice is processed inside PX4.
+All of these parts were analyzed and a new Fuzzer was developed to target this part.
+   
 ![img_04](../img/dfd-2.png)
-
-
-### 1.5. 취약점 분석 방법론
-
-#### 1.5.1. 퍼저 개발
-
-PX4 소스코드 오디팅 등 분석을 하면서 퍼저를 발전시켰고, 뮤테이션 시키는 범위를 늘리거나 프로토콜에 맞게 퍼징을 하도록 했다.   
-
-이런 방식으로 업그레이드 됨에 따라 추가적인 취약점이 발견됐다.   
-
+### 1.5. Vulnerability Analysis Methodology
+#### 1.5.1. Developing a Fuzzer
+We developed fuzzers by analyzing PX4 source code auditioning, and we decided to increase the scope of mutation or purging according to the protocol.
+As it was upgraded in this way, additional vulnerabilities were found.
 ![img_05](../img/fcs-fuzzer.png)
+##### 1.5.1.1 Setting Input Vector
+The Input value used to process the state of the drone is MAVLink Protocol. The state of drones is handled by MAVLink Protocol MSG_ID, and the configuration of the maximum minimum length and value of the PAYLOAD portion in the structure of Protocol varies depending on the MSG_ID.
+##### 1.5.1.2 Data Collection For MAVLink Fuzzer
+[MAVLink github](https://github.com/mavlink/c_library_v2) shows the "EXTRA_CRC" value added to distinguish MSG_ID from CRC value as shown in the picture below, and PAYLOAD's "max length" and "minimum length" are defined. We parsed all of these values and used them for Fuzzer development. For additional information according to MSG_ID, refer to the [MAVLink Guide Page](https://mavlink.io/en/messages/common.html).
 
-##### 1.5.1.1 Input Vector 설정
-드론의 상태를 처리할 때 사용되는 Input 값은 MAVLink Protocol이다. MAVLink Protocol MSG_ID 별로 드론의 상태를 처리하고 MSG_ID에 따라 Protocol의 구조에서 PAYLOAD 부분의 최대 최소 길이와 값의 구성이 달라진다.
 
-##### 1.5.1.2 MAVLink Fuzzer를 위한 데이터 수집
-[MAVLink github](https://github.com/mavlink/c_library_v2)를 확인해보면 아래 사진과 같이 "MSG_ID"와 CRC 값을 계산 할 때 MSG_ID을 구분하기 위해 추가 되는 "EXTRA_CRC" 값과 PAYLOAD의 "최대 길이", "최소 길이"가 정의 되어있다. 우리는 이 값을 모두 파싱하여 Fuzzer 개발에 사용했다. MSG_ID에 따른 추가 정보는 [MAVLink guide 페이지](https://mavlink.io/en/messages/common.html)를 참고했다.
+
 ![image](../img/mavlink_data.png)
-
-##### 1.5.1.3 Fuzzing 환경
-MAVLink Protocol을 처리하는 함수를 찾기 위해 소스코드 오디팅을 한 결과 [PX4의 mavlink_main.cpp](https://github.com/PX4/PX4-Autopilot/blob/master/src/modules/mavlink/mavlink_main.cpp)를 거쳐 [mavlink_receiver.cpp](https://github.com/PX4/PX4-Autopilot/blob/master/src/modules/mavlink/mavlink_receiver.cpp#L115)에 접근해 case 구문을 통해 MSG_ID 별로 패킷을 처리하는 것을 확인했다. 추가적으로 PX4에서는 SITL 이라는 가상 드론 simulation이 존재했고 아래 사진과 같은 형태로 작동이 되는 것을 확인했다. 이 SITL은 MAVLink Protocol을 처리하는 "mavlink_main.cpp"에 MAVLink Packet을 UDP를 통해 18570 포트로 전송할 수 있는 것을 확인할 수 있다. 그래서 우리는 SILT을 통해 mavlink_main.cpp -> mavlink_receiver.cpp를 타겟으로 퍼징을 진행했다.
+##### 1.5.1.3 Fuzzing Environment
+As a result of auditioning the source code to find a function that processes the MAVLink Protocol, it was confirmed that packets were processed by MSG_ID through case syntax in ["mavlink_receiver.cpp"](https://github.com/PX4/PX4-Autopilot/blob/master/src/modules/mavlink/mavlink_receiver.cpp#L115) starting with ["mavlink_main.cpp"](https://github.com/PX4/PX4-Autopilot/blob/master/src/modules/mavlink/mavlink_main.cpp) on PX4. In addition, PX4 confirmed that there was a virtual drone simulation called SITL and that it works in the same form as the picture below. It can be seen that this SITL can transmit the MAVLink Packet to 18570 port via UDP to "mavlink_main.cpp" that processes the MAVLink Protocol. So we proceeded with purging targeting mavlink_main.cpp -> mavlink_receiver.cpp through SILT.
 
 ![image](https://docs.px4.io/master/assets/img/px4_sitl_overview.d5d197f2.svg)
-
 ##### 1.5.1.4 Mavlink Fuzzer
-
-* Mavlink 패킷 구조를 충족시켜 커버리지를 높임.
-* checksum 자동 계산 (Crcc16Mcrf4xx 사용)
-* msgid 별 최대, 최소 길이 충족 (1.5.1.2에서 파싱한 데이터 사용)
-* Crash 발생시 자동 감지
-* 뮤테이션 가능 패킷 필드와 뮤테이션 불가능 패킷 필드 구분.
-  - 이유: 패킷 전체를 대상으로 뮤테이션을 진행했을 때 패킷의 형태가 깨지게 되어 패킷이 핸들러 함수에 도달하지 않는다.
-  - 뮤테이션 가능 부분 : sysid, compid, payload
-
+* Increase coverage by satisfying the Mavlink packet structure.
+* Checksum automatic calculation (using Crcc16Mcrf4xx)
+* Meet the maximum and minimum length per msgid (using data parsed at 1.5.1.2).
+* Crash auto detection.
+* Distinguishing between the mutable packet field and the mutable packet field.
+  - Reason: When mutating the entire packet, the packet's shape is broken and the packet does not reach the handler function.
+  - mutation part : sysid, compid, payload
   ![image](https://user-images.githubusercontent.com/91944211/145814413-7f515f35-5ff1-4c87-a29e-759c98f0678d.png)
-
 * [4D Fuzzer](https://github.com/BOB4Drone/4D-Fuzzer)
-
 ##### 1.5.1.5 Microservice Fuzzer
+* Add Microservice, a parent protocol, to facilitate interaction than the existing Mavlink protocol.
+* Requires more interaction than traditional Mavlink protocols
+  * EX) Interaction of FTP protocols when creating files through FTP protocols.
 
-* 기존의 Mavlink 프로토콜보다 상호작용을 쉽게 하기 위해 상위 프로토콜인 Microservice 추가
-* 기존의 Mavlink 프로토콜보다 많은 상호작용 요구
-  * EX) FTP 프로토콜을 통한 파일 작성시 FTP 프로토콜의 상호 작용
   
   ![image](https://user-images.githubusercontent.com/91944211/145818931-a05825f1-466c-4da5-8345-9f6cb13c0da0.png)
+* So, we need to adjust the order and contents of sending packets in more detail.
 
-* 따라서 패킷을 보내는 순서, 내용을 더 세부적으로 맞춰줘야함
-* PX4에서 사용하는 Microservice를 분류, 각각의 Microservice 분석, 퍼저 개발
-
+* Classifying the Microservice used in PX4, analyzing each Microservice, and developing fuzzers.
   |Mission|FTP|Traffic Management|Command|Component Information|payload|parameter|Extend parameter|Image Trasmission|
   |-------|---|------------------|-------|---------------------|-------|---------|----------------|-----------------|
-
 * [4D Fuzzer](https://github.com/BOB4Drone/4D-Fuzzer)
-
-
 #### 1.5.1.6 PX4 with AFL
-
-##### Network를 이용한 AFL 퍼징 시도
-
-* AFL을 통해 뮤테이션한 부분을 Mavlink 패킷의 형태로 만들어 보내주는 방법 고안
-
+##### AFL fuzzing attempt using the network.
+* Design a way to send the mutated part in the form of a Mavlink packet through AFL.
 ![image](https://user-images.githubusercontent.com/91944211/145824886-364e650e-8b2b-48b8-b635-6be6ea25aaf0.png)
-
-* MSGID별로 Mavlink 패킷 양식이 달라 MSGID별 별도 퍼징 필요 -> 많은 자원 소모
-
-* PX4 부팅 속도가 너무 느려 비효율적
-
-* 따라서 위에서 개발한 4Dfuzzer가 더 효율적이라 판단.
-
-##### Harness를 이용한 AFL 퍼징 시도
-
-* 속도향상을 위해 Harness를 이용해 Mavlink 핸들링 부분만 가져와 퍼징 시도
-
-* PX4 컴파일 구조 파악 (module file -> library -> 하나의 binary로 링킹)
-
+* Different MSGIDs have different Mavlink Packet forms, requiring separate fuzzing by MSGIDs -> consuming a lot of resources
+* It's inefficient because PX4 booting is too slow.
+* Therefore, it is judged that the 4D fuzzer developed above is more efficient.
+##### AFL fuzzing attempt using Harness.
+* Use Harness to get the Mavlink handling part to speed up and try fuzzing
+* Identify PX4 compilation structure (module file -> library -> link to one binary)
 ![image](https://user-images.githubusercontent.com/91944211/145828556-1682d98c-394d-4e38-8664-bc61fd2c40b8.png)
-
-* 원하는 핸들러 기능을 가진 Harness를 만들어 주었지만 다른 모듈과 상호작용하는 요소들이 많아 종속성을 만족시켜주지 못해 실패함.
+* It created Harness with the desired handler function, but failed because it failed to satisfy the dependency due to many elements that interact with other modules.
 
 #### 1.5.1.7 GPS Fuzzer
-
-* PX4에서 default로 gps를 받는 프로토콜인 UBX 프로토콜을 대상으로 진행했다.
+* It targeted the UBX protocol, a protocol that receives gps from PX4 as default.
     ```
     case gps_driver_mode_t::UBX:
 		_helper = new GPSDriverUBX(_interface, &GPS::callback, this, &_report_gps_pos, _p_report_sat_info,gps_ubx_dynmodel, heading_offset, ubx_mode);
 		set_device_type(DRV_GPS_DEVTYPE_UBX);
 		break;
     ```
-
-* 먼저 UBX 프로토콜 구조를 파악했다
-
+* First, we identified the structure of the UBX protocol.
     ![image](https://user-images.githubusercontent.com/91944211/145886738-35bb2e9d-0fc5-4339-9ebb-55ecbc9007c7.png)
+* It was difficult to generate and send packets directly because they had to receive input through the GPS module.
+* Therefore, a purging module was manufactured to mutate the input GPS value.
 
-* GPS 모듈을 통해서 입력을 받아야 하므로 직접 패킷을 생성해서 보내주기 힘들었다.
-
-* 따라서 입력되는 GPS 값을 뮤테이션해주는 퍼징 모듈을 제작하였다.
-
-    뮤테이션 코드
+    mutation code
     ```
     void input_checksum(uint8_t data){
         ck_a = (ck_a + data) & 0xff;
@@ -322,7 +284,8 @@ MAVLink Protocol을 처리하는 함수를 찾기 위해 소스코드 오디팅�
     }
     ```
     
-    퍼징 모듈 코드 - 모듈 실행시 전역변수를 True로 만들어 퍼징 진행했다.
+    Puzzing module code - When executing the module, the global variable was turned into True and purged.
+
     ```
     #include <px4_platform_common/log.h>
     #include <px4_platform_common/my.h>
@@ -340,61 +303,49 @@ MAVLink Protocol을 처리하는 함수를 찾기 위해 소스코드 오디팅�
     }
     ```
     
-    * 해당 퍼징 모듈을 실행한 결과 뮤테이션된 gps 값들이 정상적으로 들어오는 것을 확인할 수 있었다.
+    * As a result of executing the purging module, it was confirmed that the mutated gps values entered normally.
+
     
         ![image](https://user-images.githubusercontent.com/91944211/145886678-ccd55200-7e0c-4fb4-ad5f-4040bc73aeb7.png)
-
-#### 1.5.3. 시리얼 통신을 이용한 퍼징
-
-시뮬레이터 퍼징에서 나왔던 취약점을 테스트 하려면 실제 기기를 이용해야 했다.
-이를 이용하면 실제 기기에서 작동되는지 확인할 수 있다.
-통신 속도는 USB 연결 시 115,000로 설정해서 진행하면 된다.
-UDP와 시리얼의 통신 속도를 비교한 결과 평균적으로 약 4초 가의 차이로 UDP가 더 빠른걸 확인했다.
-
-**사용 방법**
-
-이미지 다운로드
+#### 1.5.3. Fuzzing using serial communication.
+Actual devices had to be used to test vulnerabilities from simulator fuzzing.
+This allows you to check if it is operating on an actual device.
+The communication speed can be set to 115,000 when connecting USB.
+As a result of comparing the communication speed between UDP and serial, it was confirmed that UDP was faster with an average difference of about 4 seconds.
+**How To Use**
+Download Image
 ```
 $ docker pull ashinedo/4-drone:PX4-1.0
 ```
-
-이미지 실행  
-취약점이 검출됐던 PX4 버전이 설치되며 퍼저가 자동으로 실행된다.
+Image execution.  
+The PX4 version where the vulnerability was found is installed and Fuzzer is automatically executed.
 ```
 $ docker run -it --rm ashinedo/4-drone:PX4-1.0
 ```
+If you don't want Fuzzer to run automatically, you can enter the command directly through the bash option.
 
-만약 자동으로 퍼저가 실행되지 않기를 바란다면 bash 옵션을 통해 직접 명령어를 입력할 수 있다.
 ```
 $ docker run -it --rm ashinedo/4-drone:PX4-1.0 bash
 ```
-
-도커 이미지들은 많은 용량을 차지하므로 이용 후 제거
+Since docker images take up a lot of capacity, remove them after use.
 ```
-로컬 이미지 리스팅
+Local image listing.
 $ docker images
 
-태그를 이용해 로컬 이미지 제거
+Remove local images using tags.
 $ docker rmi ashinedo/4-drone:PX4-1.0
 ```
-
-배포중인 Docker Image
-
+Docker Image under distribution
 **[PX4-1.0](https://hub.docker.com/layers/178199113/ashinedo/4-drone/PX4-1.0/images/sha256-c1623af96905cf568545083de81363e87fcd66dd38b717dae300b5e84184c711?context=repo)** - MAVLink fuzzer(sysid header)
-
 ### 1.6. 참조
-
 * https://mavlink.io/en/
 * https://docs.px4.io/master/ko/
 * https://nxp.gitbook.io/hovergames/developerguide/px4-tutorial-example-code/hg-px4-example-lab-1
-
-
 ## 2. MAVROS
+### 2.1. Introduction
+MAVROS is a package that executes MAVLink scalable communication between systems running ROS. Mainly, mavros is used when using Mission Computer.
+### 2.2. Analysis Environment Setting.
 
-### 2.1. 개요
-MAVROS란 ROS를 실행하는 시스템 간에 MAVLink 확장 가능 통신을 실행하는 패키지이다. 주로 [Mission Computer]()를 사용할때 mavros를 사용한다.
-
-### 2.2. 분석 환경 구축
 ```
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws
@@ -415,7 +366,8 @@ rosdep install --from-paths src --ignore-src -y
 ```
 ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh
 ```
-`~/catkin_ws/src/mavros/libmavconn/cmake/Modules/~/catkin_ws/src/mavros/libmavconn/cmake/Modules`에서 아래와 같이 변경   
+`~/catkin_ws/src/mavros/libmavconn/cmake/Modules/~/catkin_ws/src/mavros/libmavcon/cmake/Modules` to change as follows.
+
 ```
 # This module enables C++11 or C++14 support
 # 
@@ -441,17 +393,13 @@ cd ~/catkin_ws
 catkin build
 source devel/setup.bash
 ```
-### 2.3. 취약점 분석 방법론
-
-#### 2.3.1. Fuzzing을 통한 취약점 분석
-MAVROS역시 PX4와 동일하게 mavlink protocol을 사용하기 때문에 우리가 개발한 [4dfuzzer]()로 취약점을 찾을 수 있었다.
-
+### 2.3. Vulnerability analysis methodology.
+#### 2.3.1. Vulnerability analysis through fuzzing
+MAVROS also uses the same mavlink protocol as PX4, so we were able to find vulnerabilities with our developed [4dfuzzer]().
 ## 카테고리 <!-- omit in toc -->
-
 ### 소개 <!-- omit in toc -->
    1. [연구배경 및 목표](/1-intro/about-drone-research.md)
    2. [선행 연구](/1-intro/related-work.md)
-
 ### 접근 방법론 <!-- omit in toc -->
    1. [무인항공기(UAV) 소프트웨어](/2-body/1_software-uav.md)
       1. [Flight controller software](/2-body/1_software-uav.md/#1-fcsflight-controller-software)
@@ -462,7 +410,6 @@ MAVROS역시 PX4와 동일하게 mavlink protocol을 사용하기 때문에 우�
        2. [PX4 Optical Flow](/2-body/3_hardware.md/#2-px4-optical-flow)
        3. [PX4 Telemetry Radio](/2-body/3_hardware.md/#3-px4-telemetry-radio)
        4. [Wifi 모듈](/2-body/3_hardware.md/#4-wifi-모듈)
-
 ### 결과 <!-- omit in toc -->
    1. [프로젝트 성과](/3-conclusion/result.md)
    2. [프로젝트 후기](/3-conclusion/conclusion.md)
