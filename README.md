@@ -23,7 +23,7 @@ In addition, the patching work on the issue was completed by reporting so that t
 
 - Mentor: Park Chunseong, Kang Inwook.
 - PL(Project Leader): Won Yohan.
-- Mentee: PM Lee Junoh, Kyung Kyuchang, Kim Donghyun, Ryu Hyeongho, Choi Sbin, Kim Jisoo.
+- Mentee: PM Lee Junoh, Kyung Kyuchang, Kim Donghyun, Ryu Hyeongho, Choi Subin, Kim Jisoo.
 
 
 ## Table of Contents <!-- omit in toc -->
