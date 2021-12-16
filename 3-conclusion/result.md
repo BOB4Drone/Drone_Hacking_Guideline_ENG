@@ -1,6 +1,6 @@
-# 프로젝트 성과 <!-- omit in toc -->
+# Project results <!-- omit in toc -->
 
-## 목차 <!-- omit in toc -->
+## Table of Contents <!-- omit in toc -->
 
 - [1. Issue Commits](#1-issue-commits)
 - [2. 취약점 제보](#2-취약점-제보)
@@ -39,15 +39,15 @@
 | 11 | [QGC] use after free occurs in GeoTag Images menu |  https://github.com/mavlink/qgroundcontrol/issues/10068 |
 ---
 
-## 2. 취약점 제보
+## 2. Vulnerability report
 
-### 2.1 PX4 firmware 취약점
+### 2.1 PX4 firmware Vulnerabilities 
 
 
 
 #### 2.1.1 msgID #332 BOF 
 
-* msgID #332번은 TRAJECTORY_REPRESENTATION_WAYPOINTS 패킷으로 valid points를 5개까지만 받는다고 프로토콜 문서에 명시되어 있다.
+* msgID #332번은 TRAJECTORY_REPRESENTATION_WAYPOINTS 패킷으로 valid points를 5개까지만 받는다고 프로토콜 문서에 적혀 있다.
 ![image](https://user-images.githubusercontent.com/91944211/145849438-b036099c-e19b-4b51-ae16-c5b2bb9c9aeb.png)
 
 * 따라서 실제 코드에서도 waypoint배열은 프로토콜 문서와 같이 크기가 5인 배열로 선언되어 있다.
