@@ -1,6 +1,6 @@
-# 선행 연구들 <!-- omit in toc -->
+# Previous studies <!-- omit in toc -->
 
-## 목차 <!-- omit in toc -->
+## Table of Contents <!-- omit in toc -->
 
 - [1. RVFuzzer: Finding Input Validation Bugs in Robotic Vehicles through Control-Guided Testing](#1-rvfuzzer-finding-input-validation-bugs-in-robotic-vehicles-through-control-guided-testing)
   - [1.1. 요약](#11-요약)
@@ -13,25 +13,24 @@
 
 ## 1. RVFuzzer: Finding Input Validation Bugs in Robotic Vehicles through Control-Guided Testing
 
-### 1.1. 요약
+### 1.1. Summary
 
-RV(robot vehicle)모델들이 다양해짐에 따라 테스트해야 하는 매개변수들이 매우 많아졌고 점점 퍼징을 진행하기 어려워졌다. 시간이 지남에 따라 이 매개변수들을 만족시켜주는 퍼저들은 등장했지만 퍼저를 통한 input이 오작동을 일으키는지 판단하기 어렵기 때문에 RV 시스템에 바로 적용하기 어려웠다. 따라서 이 논문에서는 로봇의 제어 가능여부를 감지하는 RVF 감지기를 구현하여 쉽게 오작동 여부를 판단하고 기존의 RV 시뮬레이션 프레임워크와 쉽게 결합하도록 만들어 쉽게 취약점을 도출해낼 수 있게 했다. 
+As the RV (robot vehicle) models become more diverse, the parameters that need to be tested have become very numerous and increasingly difficult to proceed with fuzzing. Over time, fuzzers satisfying these parameters appeared, but it was difficult to apply them directly to the RV system because it was difficult to determine whether the input via the fuzzer caused a malfunction. Thus, in this paper, the RVF detector, which detects the controllable status of the robot, was implemented so that it could easily be determined for malfunction and easily combined with the existing RV simulation framework, thus eliciting vulnerabilities.
 
 ## 2. Security Analysis of the Drone Communication Protocol: Fuzzing the MAVLink protocol
 
-### 2.1. 요약
+### 2.1. Summary
 
-Mavlink에 대한 직접적인 퍼저를 구축한 논문이다. Mavlink 구조 분석부터 시작해서 진행한 퍼징 방법론, 뮤테이션 방식, CRC 계산 등 자신이 퍼저를 만들면서 경험한 내용들을 설명하는 식의 논문이다. 이 퍼저를 통해 저자는 취약점을 발견해내었으며 퍼저를 개선하는 것을 future works로 남겨두었다.
+It is a paper that has built a direct fuzzer on Mavlink. It is a paper that explains what you have experienced while making fuzzers, starting with structural analysis, fuzzing methodology, mutation method, and CRC calculation. Through this fuzzer, the author discovered a vulnerability and left it as future works to improve the fuzzer.
 
 ## 3. How to Analyze the Cyber Threat from Drones
 
-### 3.1. 요약
-DHS(Department of Homeland Security)의 관점에서 UAS 사이버 보안 위협 영향을 조사한 보고서이다. 주로 사이버 보안과 관련하여 UAS 위협을 분류하는 데 중점을 두고 있으며 완화 및 방어 전략에 대한 노력을 지시하기 위해 이러한 위협을 분석하는 데 도움이 될 수 있는 접근 방식을 제시한다.
+### 3.1. Summary
+This report investigates the impact of UAS cybersecurity threats from the perspective of DHS (Department of Homeland Security). It focuses primarily on classifying UAS threats in relation to cybersecurity and presents approaches that can help analyze these threats to direct efforts in mitigation and defense strategies.
 
-본 보고서에서는 UAS를 공격 대상으로 보는 관점과, UAS를 공격 수단으로 보는 관점으로 나누어 총 4개의 시나리오를 제시한다. 
+In this report, a total of four scenarios are presented by dividing the view of UAS as an attack target and the view of UAS as an attack means.
 
-나아가 앞으로도 DHS의 고위 관직자들은 계속해서 더 안전한 UAS system을 구축하기 위해 더 노력해야한다고 제시하며 마무리된다. 
-
+Furthermore, it is concluded by suggesting that senior DHS officials should continue to work harder to establish a safer UAS system.
 
 ---
 
