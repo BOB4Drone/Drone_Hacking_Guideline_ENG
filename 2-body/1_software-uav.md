@@ -97,48 +97,46 @@ Works as a Public-Subscribe model.
 
 
 
-**uORB Messaging 용어 정리**
-* Node : uORB 메세지를 교환하는 주체. Process라고도 칭함.
-* Topic : 두 Node간 교환하는 정보의 단위.
-* Publish : 하나의 Topic에 대해서 공유하는 과정.
-* Subscribe : 하나의 Topic에 대해서 요청하는 과정.
-* Advertise : 처음 Publish할 때 Master Node에게 부탁하게 되는데, 이 과정을 Advertising 이라고 함.
-
-```예) MAVLink의 msgID에 따른 PAYLOAD의 값을 연산하고 Publish를 하여 Topics에 올리고 모듈은 Topics에 publish된 값을 Subscribe를 하여 uORB 값을 업데이트 한다.```
+**uORB Messaging terms**
+* Node : uORB message exchange subject. Also referred to as Process.
+* Topic : A unit of information exchanged between two nodes.
+* Publish : The process of sharing one Topic.
+* Subscribe : The process of requesting one Topic.
+* Advertise : If a node publish for the first time, the node asks the Master Node. This process is called Advertising.
 
 ![img_uorb1](../img/uorb-1.png)
 
 
-### 1.3. PX4 빌드
+### 1.3. Building PX4
 
-#### 1.3.1. 직접 빌드하기
+#### 1.3.1. Building from scratch (w/ source code)
 
-**PX4 다운로드**
+**Downloading PX4**
 
-다음 명령어를 통해 PX4 소스 코드를 다운 받을 수 있다.   
+You can download the PX4 source code through the following command. 
 ```
 $ git clone https://github.com/PX4/PX4-Autopilot.git --recursive
 ```
 
-시뮬레이터를 실행하려면 아래 스크립트로 실행 환경을 사전에 설치해야 한다.   
-jdk, 파이썬 등이 설치되어 있어야 한다.   
+To run the simulator, you must pre-install the execution environment with the script below.   
+Jdk, Python, etc. shall be installed.   
 ```
 $ bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
 ```
 
-이후 원하는 시뮬레이터를 지정해서 make를 진행한다.   
-시뮬레이터는 jMAVSim, Gazebo 등이 있으며 공식 문서는 Gazebo를 추천한다.   
+Then, designate the desired simulator and proceed with the make.   
+Simulators include jMAVSim and Gazbo, and official documents recommend Gazbo.   
 ```
 Start JMavSim with Address Sanitizer(default vehicle model)
 $ make px4_sitl jmavsim PX4_BUILD_TYPE=0 PX4_ASAN=1
 ```
 
-#### 1.3.2. 도커 활용하기
+#### 1.3.2. Building with a docker
 
-PX4는 개발 환경이 모두 세팅된 pre-built 컨테이너가 제공된다. [제공되는 컨테이너](https://github.com/PX4/PX4-containers/blob/master/README.md#container-hierarchy) 를 이용하면 손쉽게 퍼징 시도가 가능하다.   
+PX4 is provided with pre-built containers with all development environments set up. Purging attempts can be made easily using the [container provided](https://github.com/PX4/PX4-containers/blob/master/README.md#container-hierarchy)
 
-먼저 아래 명령어로 도커를 설치해야 한다.   
-다음으로 권한을 설정하는 명령어를 실행한다.   
+You must first install the docker with the command below.      
+Next, execute the command to set permissions.      
 ```
 $ curl -fsSL get.docker.com -o get-docker.sh
 $ sudo sh get-docker.sh
@@ -149,7 +147,7 @@ Add your user to the docker group.
 $ sudo usermod -aG docker $USER
 ```
 
-아래 명령어로 호스트 컴퓨터에서 소스코드를 다운로드 받는다.   
+Download the source code from the host computer using the command below.
 ```
 $ mkdir src
 $ cd src
@@ -157,8 +155,8 @@ $ git clone https://github.com/PX4/PX4-Autopilot.git
 $ cd PX4-Autopilot
 ```
 
-컨테이너를 이용할 수 있도록 제공되는 스크립트를 이용해 PX4를 실행한다.   
-또는 bash 옵션으로 직접 명령줄을 이용할 수 있다.   
+Run PX4 using the script provided to enable the use of PX4.      
+Alternatively, command lines can be used directly with the bash option.        
 ```
 build SITL
 $ ./Tools/docker_run.sh 'make px4_sitl_default'
@@ -167,8 +165,8 @@ start a bash session
 $ ./Tools/docker_run.sh 'bash'
 ```
 
-우리는 퍼징을 위해 미리 만들어둔 도커 파일을 제공하려 하고 있다.   
-자세한 정보는 [이곳](../README.md) 참조
+We're trying to provide a pre-created docker file for fuzzing.
+See [here](../README.md) for more information
 
 ### 1.4. DFD
 
