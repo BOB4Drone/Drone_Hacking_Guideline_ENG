@@ -381,10 +381,10 @@ Link: [To Be Announced]
       2. [MAVROS](/2-body/1_software-uav.md/#2-nuttx-rtos)
    2. [Ground Control System software](/2-body/2_software-gcs.md/)
    3. [Hardware](/2-body/3_hardware.md)
-       1. [GPS Module](/2-body/3_hardware.md/#1-gps-모듈)
+       1. [GPS Module](/2-body/3_hardware.md/#1-gps-module)
        2. [PX4 Optical Flow](/2-body/3_hardware.md/#2-px4-optical-flow)
        3. [PX4 Telemetry Radio](/2-body/3_hardware.md/#3-px4-telemetry-radio)
-       4. [Wifi Module](/2-body/3_hardware.md/#4-wifi-모듈)
+       4. [Wifi Module](/2-body/3_hardware.md/#4-wifi-module)
 
 ### Result <!-- omit in toc -->
    1. [Project results](/3-conclusion/result.md)
