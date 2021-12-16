@@ -1,6 +1,7 @@
 # An unmanned aerial vehicle(UAV) software.  <!-- omit in toc -->
 
 ## Table of Contents
+  <!-- omit in toc -->
 
 - [1. FCS(Flight Controller Software)](#1-fcsflight-controller-software)
   - [1.1. Introduction](#11-Introduction)
@@ -25,12 +26,12 @@
       - [1.5.1.7. GPS Fuzzer](#1516-gps-fuzzer)
     - [1.5.2. Fuzzing using serial communication.
 ](#152-Fuzzing-using-serial-communication.)
-  - [1.6. Reference](#16-Reference)
+  - [1.6. 참조](#16-참조)
 - [2. Mavros](#2-mavros)
   - [2.1. Introduction](#21-Introduction)
   - [2.2. Analysis Environment Setting.](#22-Analysis-Environment-Setting.)
   - [2.3. Vulnerability analysis methodology.](#23-Vulnerability-analysis-methodology.)
-    -[2.3.1 Vulnerability analysis through fuzzing](#231-Vulnerability-analysis-through-fuzzing)
+    - [2.3.1. Vulnerability analysis through fuzzing](#231-Vulnerability-analysis-through-fuzzing)
 - - -
 
 ## 1. FCS(Flight Controller Software)
