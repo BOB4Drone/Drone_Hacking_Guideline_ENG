@@ -3,11 +3,11 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [1. RVFuzzer: Finding Input Validation Bugs in Robotic Vehicles through Control-Guided Testing](#1-rvfuzzer-finding-input-validation-bugs-in-robotic-vehicles-through-control-guided-testing)
-  - [1.1. Summary](#11-요약)
+  * [1.1. Summary](#11-summary)
 - [2. Security Analysis of the Drone Communication Protocol: Fuzzing the MAVLink protocol](#2-security-analysis-of-the-drone-communication-protocol-fuzzing-the-mavlink-protocol)
-  - [2.1. Summary](#21-요약)
+  * [2.1. Summary](#21-summary)
 - [3. How to Analyze the Cyber Threat from Drones](#3-how-to-analyze-the-cyber-threat-from-drones)
-  - [3.1. Summary](#31-요약)
+  * [3.1. Summary](#31-summary)
 
 - - -
 
