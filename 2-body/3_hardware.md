@@ -1,6 +1,6 @@
-# 하드웨어 <!-- omit in toc -->
+# Hardware <!-- omit in toc -->
 
-## 목차 <!-- omit in toc -->
+## Contents <!-- omit in toc -->
 
 - [1. GPS Module](#1-gps-모듈)
   - [1.1. Overview](#11-개요)
