@@ -8,7 +8,7 @@
   * [1.2. GCS Functions](#12-gcs-functions)
   * [1.3. Status of GCS by drone](#13-status-of-gcs-by-drone)
   * [1.4. ELF vs AppImage](#14-elf-vs-appimage)
-- [2. Analytical Environment](#2-analytical-environment)
+- [2. Analyze Environment](#2-analytical-environment)
   * [2.1. Build QGC](#21-build-qgc)
     + [2.1.1. Installing QT](#211-installing-qt)
     + [2.1.2. Build using GUI](#212-build-using-gui)
@@ -54,7 +54,7 @@ As shown in the following figure, AppImage is stored together in the form of squ
 ![Untitled (2)](https://user-images.githubusercontent.com/91944211/145854132-68ed37d7-623e-47ce-803f-bf079a7cef12.png)
 ![Untitled (3)](https://user-images.githubusercontent.com/91944211/145854403-426d88d4-87e9-46fb-b1d0-ef62d9f02d1d.png)
 
-## 2. Analytical Environment
+## 2. Analyze Environment
 
 ### 2.1. Build QGC
 
