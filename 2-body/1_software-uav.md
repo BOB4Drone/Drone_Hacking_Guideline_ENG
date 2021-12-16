@@ -25,7 +25,7 @@
       - [1.5.1.7. GPS Fuzzer](#1516-gps-fuzzer)
     - [1.5.2. Fuzzing using serial communication.
 ](#152-Fuzzing-using-serial-communication.)
-  - [1.6. 참조](#16-참조)
+  - [1.6. Reference](#16-Reference)
 - [2. Mavros](#2-mavros)
   - [2.1. Introduction](#21-Introduction)
   - [2.2. Analysis Environment Setting.](#22-Analysis-Environment-Setting.)
@@ -337,7 +337,7 @@ $ docker rmi ashinedo/4-drone:PX4-1.0
 ```
 Docker Image under distribution
 **[PX4-1.0](https://hub.docker.com/layers/178199113/ashinedo/4-drone/PX4-1.0/images/sha256-c1623af96905cf568545083de81363e87fcd66dd38b717dae300b5e84184c711?context=repo)** - MAVLink fuzzer(sysid header)
-### 1.6. 참조
+### 1.6. Reference
 * https://mavlink.io/en/
 * https://docs.px4.io/master/ko/
 * https://nxp.gitbook.io/hovergames/developerguide/px4-tutorial-example-code/hg-px4-example-lab-1
