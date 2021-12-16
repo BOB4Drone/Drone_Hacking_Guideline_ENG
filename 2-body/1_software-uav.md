@@ -1,6 +1,6 @@
-# 무인항공기(UAV) 소프트웨어  <!-- omit in toc -->
+# An unmanned aerial vehicle(UAV) software.  <!-- omit in toc -->
 
-## 목차  <!-- omit in toc -->
+## Table of Contents
 
 - [1. FCS(Flight Controller Software)](#1-fcsflight-controller-software)
   - [1.1. Introduction](#11-Introduction)
