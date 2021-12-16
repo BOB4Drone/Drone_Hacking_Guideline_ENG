@@ -14,7 +14,7 @@ In addition, the patching work on the issue was completed by reporting so that t
 
 ※ 4DFUZZER [(PublicRepository)](https://github.com/BOB4Drone/4D-Fuzzer)
 
-※ Korean documents are [here](https://github.com/estrogenic/bob-4-drone/blob/master/Github-Flavored%20Markdown.md)
+※ Korean documents are [here](https://github.com/BOB4Drone/Drone_Hacking_Guideline)
 
 
 ### Author
