@@ -73,7 +73,7 @@ MAVLink protocol version 2 consists of eight headers, checksums, signatures, and
 
 ![img_mav2](../img/MAVLink-2.png)
 
-구조
+Structure
 
 * Packet start marker (STX): Magic value indicating the starting point of the packet.
 * Payload length (LEN): PAYLOAD Length
