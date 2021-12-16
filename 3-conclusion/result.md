@@ -3,22 +3,22 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [1. Issue Commits](#1-issue-commits)
-- [2. Vulnerability report](#2-취약점-제보)
-   - [2.1 PX4 firmware Vulnerabilities ](#21-px4-firmware-취약점)
+- [2. Vulnerability report](#2-vulnerability-report)
+   - [2.1 PX4 firmware Vulnerabilities ](#21-px4-firmware-vulnerabilities)
       - [2.1.1 msgID #332 BOF](#211-msgid-332-bof)
       - [2.1.2 msgID #147 oob-read](#212-msgid-147-oob-read)
       - [2.1.3 dos attack through mavftp](#213-dos-attack-through-mavftp)
-   - [2.2 QGround Control Vulnerabilities ](#22-qground-control-취약점)
+   - [2.2 QGround Control Vulnerabilities](#22-qground-control-vulnerabilities)
       - [2.2.1 msgID #126 oob-read](#221-msgid-126-oob-read)
       - [2.2.2 msgID #266, #267 oob-read](#222-msgid-266-267-oob-read)
       - [2.2.3 null exception in airmap login function](#223-null-pointer-dereference-in-airmap-login-function)
       - [2.2.4 oob-read in mavlink console](#224-oob-read-in-mavlink-console)
-   - [2.3 MAVROS Vulnerabilities](#23-mavros-취약점)
+   - [2.3 MAVROS Vulnerabilities](#23-#23-mavros-vulnerabilities)
        - [2.3.1 msgID #192 oob-read](#231-msgid-192-bof)
        - [2.3.2 msgID #332 oob-read](#232-msgid-332-bof)
-- [3. Discovered Vulnerability Code Patch](#3-발견-취약점-코드-패치)
-- [4. Reproducing discovery vulnerabilities through docker](#4-도커화를-통한-발견-취약점-재현)
-- [5. Submission of a paper](#5-논문-투고)
+- [3. Discovered Vulnerability Code Patch](#3-discovered-vulnerability-code-patch)
+- [4. Reproducing discovery vulnerabilities through docker](#4-reproducing-discovery-vulnerabilities-through-docker)
+- [5. Submission of a paper](#5-submission-of-a-paper)
 
 ---
 
