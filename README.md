@@ -13,7 +13,7 @@ In addition, the patching work on the issue was completed by reporting so that t
 
 ※ 4DFUZZER [(PublicRepository)](https://github.com/BOB4Drone/4D-Fuzzer)
 
-※ Korean documents are [here](https://github.com/BOB4Drone/Drone_Hacking_Guideline)
+※ 한국어 문서 [here](https://github.com/BOB4Drone/Drone_Hacking_Guideline)
 
 ---
 
