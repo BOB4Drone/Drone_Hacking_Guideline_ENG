@@ -19,7 +19,7 @@ In addition, the patching work on the issue was completed by reporting so that t
 
 ### Author
 
-> KITRI BoB 10th vulnerability analysis track 4-Drone team.
+> KITRI BoB 10th | vulnerability analysis track | 4-Drone
 
 - Mentor: Park Chunseong, Kang Inwook.
 - PL(Project Leader): Won Yohan.
