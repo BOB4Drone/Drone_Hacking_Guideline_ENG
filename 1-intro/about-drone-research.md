@@ -2,18 +2,18 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [1. Research Background](#1-연구-배경)
-  - [1.1. Drone Components](#11-드론-구성요소)
-    - [1.1.1. Hardware](#111-하드웨어)
-    - [1.1.2. Software](#112-소프트웨어)
-  - [1.2. Possible damage](#12-발생-가능한-피해)
-- [2. Scope of Research](#2-연구-범위)
-  - [2.1. Hardware](#21-하드웨어)
-  - [2.2. Software](#22-소프트웨어)
-- [3. Research Objectives](#3-연구-목표)
-  - [3.1. Non-Compromised](#31-non-compromised)
-  - [3.2. Compromised](#32-compromised)
-  - [2.3. Expected performance](#23-기대성과)
+- [1. Research Background](#1-research-background)
+  * [1.1. Drone Components](#11-drone-components)
+    + [1.1.1. Hardware](#111-hardware)
+    + [1.1.2. Software](#112-software)
+  * [1.2. Possible damage](#12-possible-damage)
+- [2. Scope of Research](#2-scope-of-research)
+  * [2.1. Hardware](#21-hardware)
+  * [2.2. Software](#22-software)
+- [3. Research Objectives](#3-research-objectives)
+  * [3.1. Non-Compromised](#31-non-compromised)
+  * [3.2. Compromised](#32-compromised)
+  * [2.3. Expected performance](#23-expected-performance)
 
 - - -
 
