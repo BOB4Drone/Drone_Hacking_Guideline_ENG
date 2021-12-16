@@ -200,7 +200,7 @@ The structure mutates only the 'payload' part of Mavlink in AFL++ and transmits 
 As a result, many crashes could be obtained as follows. All of these crashes were vulnerabilities found in the 4dfuzzer above, but it seems that they can be useful as future work by applying them.
 
 
-## Category <!-- omit in toc -->
+## Table of Contents <!-- omit in toc -->
 
 ### Introduction <!-- omit in toc -->
    1. [Research background and goal](/1-intro/about-drone-research.md)
@@ -211,7 +211,10 @@ As a result, many crashes could be obtained as follows. All of these crashes wer
       1. [Flight controller software](/2-body/1_software-uav.md/#1-fcsflight-controller-software)
       2. [MAVROS](/2-body/1_software-uav.md/#2-nuttx-rtos)
    2. [Ground Control System software](/2-body/2_software-gcs.md/)
-   3. [Hardware](/2-body/3_hardware.md)
+      1. [Introduction](/2-body/2_software-gcs.md/#1-introduction)
+      2. [Analyze Environment](/2-body/2_software-gcs.md#2-analyze-environment)
+      3. [Vulneralility Analysis Methodology](/2-body/2_software-gcs.md#3-vulnerability-analysis-methodology)
+   4. [Hardware](/2-body/3_hardware.md)
        1. [GPS Module](/2-body/3_hardware.md/#1-gps-module)
        2. [PX4 Optical Flow](/2-body/3_hardware.md/#2-px4-optical-flow)
        3. [PX4 Telemetry Radio](/2-body/3_hardware.md/#3-px4-telemetry-radio)
