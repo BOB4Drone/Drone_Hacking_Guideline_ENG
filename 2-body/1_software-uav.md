@@ -76,24 +76,24 @@ Structure
 * Payload length (LEN): Payload length
 * Incompatibility Flags: Used to indicate the ability to support packet processing
 * Compatibility Flags: Used to indicate that the MAVLink library does not interfere with the processing of packets even if it does not understand the functionality.
-* Packet Sequence (SEQ): sequence로 패킷 손실 탐지
-* SYSTEM_ID (SYS): 여러 플랫폼이 동일한 네트워크 사용 가능하게 ID 부여
-* Component ID (COMP): 한 플랫폼에서 여러 component 받게 ID 부여
-* Message ID (MSG): 전송되는 메시지를 식별. 페이로드 및 디코딩 방법을 정의
-* DATA (PAYLOAD): 실제 전송되는 data값
-* Checksum: 오류 검출을 위한 checksum 데이터
-* Signature: 무결성 검증을 위한 signature
+* Packet Sequence (SEQ): Used to trace packet loss detection
+* SYSTEM_ID (SYS): Used to provide multiple for platforms to use the same network availability ID
+* Component ID (COMP): Used to identify multiple components on one platform
+* Message ID (MSG): Identifies the message being sent. Define payload and decoding methods
+* DATA (PAYLOAD): Actual data values transmitted
+* Checksum: Checksum data for error detection
+* Signature: Signature for Integrity Verification
 
-**v2와 v1의 차이점**
+**Differences Between v2 and v1**
 
-* 24bit 메시지 ID - 1600만 개 이상의 고유한 메시지 정의 허용(MAVLink 1은 256개로 제한됨)
-* 패킷의 무결성을 검증하는 SIGNATURE 값이 추가됨
-  * 하지만 PX4 에서는 SIGNATURE를 검증하는 과정이 없다. (무결성 검증을 안한다.)
+* 24bit message ID - 16 million+ unique message definitions allowed (MAVLink 1 is limited to 256)
+* Added SIGNATURE value to validate packet integrity
+  * However, there is no verification process for SIGNATURE in PX4. (No verification of integrity)
 
 #### 1.2.2. uORB API
 
-uORB란 Micro Object Request Broker의 줄임말로 비동기식 메시징 IPC 통신 기법 중 하나이다.   
-Publish-Subscribe 모델로 작동한다.   
+uORB is an abbreviation for Micro Object Request Broker and is one of the asynchronous messaging IPC communication techniques.   
+Works as a Public-Subscribe model.
 
 
 
