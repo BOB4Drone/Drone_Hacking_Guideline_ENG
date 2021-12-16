@@ -1,6 +1,6 @@
 # Hardware <!-- omit in toc -->
 
-## Contents <!-- omit in toc -->
+## Table of Contents <!-- omit in toc -->
 
 - [1. GPS Module](#1-gps-module)
   - [1.1. Overview](#11-overview)
