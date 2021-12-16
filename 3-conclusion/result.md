@@ -47,10 +47,10 @@
 
 #### 2.1.1 msgID #332 BOF 
 
-* msgID #332번은 TRAJECTORY_REPRESENTATION_WAYPOINTS 패킷으로 valid points를 5개까지만 받는다고 프로토콜 문서에 적혀 있다.
+* msgID #332 is a TRAJECTORY_REPRESENTATION_WAYPOINTS packet, which states in the protocol document that it receives up to five valid points.
 ![image](https://user-images.githubusercontent.com/91944211/145849438-b036099c-e19b-4b51-ae16-c5b2bb9c9aeb.png)
 
-* 따라서 실제 코드에서도 waypoint배열은 프로토콜 문서와 같이 크기가 5인 배열로 선언되어 있다.
+* Thus, even in the actual code, the waypoint array is declared to be a five-size array, as in the protocol document.
    ```
    struct vehicle_trajectory_waypoint_s {
    #endif
@@ -60,14 +60,14 @@
         struct trajectory_waypoint_s waypoints[5];
    ```
 
-* 또한 waypoint필드 타입은 uint8_t이므로 0xff까지 입력이 가능하고 따라서 만약 5가 넘으면 예외처리를 해주는 구문이 필요하다.
+* Also, since the waypoint field type is uint8_t, it is possible to enter up to 0xff, so if it is over 5, a syntax for exception treatment is required.
 
-* 하지만 패킷 디코딩시 별다른 예외처리를 진행하지 않는다.
+* However, it does not process any exceptions when decoding packets are being decoded.
    ```
    trajectory_representation_waypoints->valid_points=mavlink_msg_trajectory_representation_waypoints_get_valid_points(msg);
    ```
 
-* 또한 파싱한 데이터값을 사용할때도 다른 예외처리 구문이 존재하지 않고 for문의 iteration 횟수로 사용하기 때문에 waypoints배열을 벗어난 곳에서도 true로 메모리를 덮을 수 있다.
+* In addition, when using parsed data values, there is no other exception processing syntax and it is used as the number of repetitions of the for statement, so memory can be polluted with true even outside the waypoints array.
    ```
    for (int i = 0; i < number_valid_points; ++i) {
 		trajectory_waypoint.waypoints[i].point_valid = true;
@@ -77,9 +77,9 @@
 
 #### 2.1.2 msgID #147 oob-read
 
-* msgID #147번 BATTERY_STATUS 패킷에서 현재 연결되어있는 배터리들의 전압을 더해줄때 취약점이 발생한다.
+* A vulnerability occurs when adding voltage to the currently connected batteries in packets of msgID #147 BATTERY_STATUS.
 
-* 다음과 같이 배터리의 전압을 더해준다.
+* The code adds the voltage of the battery as follows.
 
 	```
 	while (battery_mavlink.voltages[cell_count] < UINT16_MAX && cell_count < 10) {
@@ -89,7 +89,7 @@
 	}
 	```
 
-* PX4에서 컴파일시 최적화 옵션이 활성화되어 있기 때문에 컴파일시 while문 내 조건은 다음과 같이 변화한다.
+* Since the optimization option is activated when compiling in PX4, the conditional statement in the loop changes as follows.
 	```
 	while (battery_mavlink.voltages[cell_count] < UINT16_MAX && cell_count < 10)
 	```
@@ -106,12 +106,13 @@
 	while (1)
 	```
 
-* 따라서 컴파일시 while문 내 조건은 항상 참이 되도록 변경된다.
+* Therefore, when compiling, the conditions in the loop are always changed to be true.
 
-* 실제로 ida를 통해 컴파일된 코드를 확인한 결과 while문 내부 코드가 지워진 것을 확인할 수 있었다.
+* In fact, after checking the compiled code through ida, we were able to confirm that the internal code of the loop had been erased.
 	![image](https://user-images.githubusercontent.com/91944211/145856918-5ec925f8-3e43-4a5f-a4b5-69845f82589c.png)
 
-* while문이 참이 되므로 cell_count가 무한히 증가하여 oob-read가 발생하게 된다
+* When the loop is always true, the cell_count increases infinitely, resulting in oob-read.
+
 
 ---
 
@@ -120,17 +121,17 @@
 * mavftp를 통해 디렉토리를 생성 가능하다.
 	![image](https://user-images.githubusercontent.com/91944211/145863374-99c0ec79-7fa8-436d-aaa2-9aedef56b05c.png)
 
-* 반복적으로 디렉토리 생성시 램 제한 범위를 넘어서게(px4는 vfs를 사용하기 때문에 디렉토리를 생성할시 램에 적재된다.) 되고 드론이 종료된다.
+* When creating a directory repeatedly, it goes beyond the ram limit (px4 uses vfs, so it is loaded in RAM when creating a directory) and the drone ends.
 
-* 따라서 이것을 이용해 드론을 종료시키는 dos공격이 가능하다.
+* Therefore, it can terminate the drone like dos attack by using this. 
 
 ---
 
-### 2.2 QGround Control 취약점
+### 2.2 QGround Control Vulnerabilities 
 
 #### 2.2.1 msgID #126 oob-read
 
-* MsgID #126번 serial_control 패킷에서 취약점이 발생한다.
+* A vulnerability exists in serial_control packet MSGID #126.
 
 * 프로토콜 문서를 보면 data필드는 최대 70바이트이지만 데이터의 길이를 나타내는 count 필드는 uint8_t로 0xff까지 입력이 가능하다. 따라서 count필드와 data의 실제 길이가 다를때 예외처리가 필요하다.
 
