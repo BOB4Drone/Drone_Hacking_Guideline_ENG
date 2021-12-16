@@ -3,28 +3,28 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [1. 개요](#1-개요)
-    - [1.1. GCS 개념](#11-GCS-개념)
-    - [1.2. GCS 기능](#12-GCS-기능)
-    - [1.3. 드론별 GCS 현황](#13-드론별-gcs-현황)
-    - [1.4. ELF vs AppImage](#14-elf-vs-appimage)
-- [2. 분석 환경 구축](#2-분석-환경-구축)
-    - [2.1. QGC 빌드](#21-qgc-빌드)
-      - [2.1.1. QT 설치](#211-qt-설치)	
-      - [2.1.2. GUI를 이용한 빌드](#212-gui를-이용한-빌드)
-      - [2.1.3. CLI를 이용한 빌드](#213-cli를-이용한-빌드)
-    - [2.2. Sanitizer 사용](#22-sanitizer-사용)
-      - [2.2.2. GUI 이용](#221-gui를-이용한-sanitizer-사용)
-      - [2.2.3. CLI 이용](#222-cli를-이용한-sanitizer-사용)
-- [3. 취약점 분석 방법론](#3-취약점-분석-방법론)
-    - [3.1. 소스코드 오디팅을 통한 취약점 분석](#31-소스코드-오디팅을-통한-취약점-분석)
-      - [3.1.1. MAVLINK Handle 함수 오디팅](#311-mavlink-handle-함수-오디팅)
-      - [3.1.2. QGC GUI 기능 함수 오디팅](#312-qgc-gui-기능-함수-오디팅)
-    - [3.2. Fuzzing을 통한 취약점 분석](#21-qgc-빌드)
-      - [3.2.1. Mavlink Fuzzer](#321-mavlink-fuzzer)
-      - [3.2.2. QGC With AFL++](#322-qgc-with-afl)
+- [1. Introduction](#1-introduction)
+  * [1.1. GCS Concepts](#11-gcs-concepts)
+  * [1.2. GCS Functions](#12-gcs-functions)
+  * [1.3. 드론별 GCS 현황](#13-----gcs---)
+  * [1.4. ELF vs AppImage](#14-elf-vs-appimage)
+- [2. Analytical Environment](#2-analytical-environment)
+  * [2.1. Build QGC](#21-build-qgc)
+    + [2.1.1. Installing QT](#211-installing-qt)
+    + [2.1.2. Build using GUI](#212-build-using-gui)
+    + [2.1.3. Build using CLI](#213-build-using-cli)
+  * [2.2. Sanitizer](#22-sanitizer)
+    + [2.2.1. Using the Sanitizer with the GUI](#221-using-the-sanitizer-with-the-gui)
+    + [2.2.2. Using Sanitizer with CLI](#222-using-sanitizer-with-cli)
+- [3. Vulnerability Analysis Methodology](#3-vulnerability-analysis-methodology)
+  * [3.1. Vulnerability Analysis through Source Code Auditing](#31-vulnerability-analysis-through-source-code-auditing)
+    + [3.1.1. MAVLINK Handle Function Auditing](#311-mavlink-handle-function-auditing)
+    + [3.1.2. QGC GUI Functional Auditing](#312-qgc-gui-functional-auditing)
+  * [3.2. Vulnerability Analysis through Fuzzing](#32-vulnerability-analysis-through-fuzzing)
+    + [3.2.1. Mavlink Fuzzer](#321-mavlink-fuzzer)
+    + [3.2.2. QGC With AFL++](#322-qgc-with-afl--)
 
-## 1. 개요
+## 1. Introduction
 
 ### 1.1. GCS Concepts
 
@@ -37,7 +37,7 @@ GCS, short for Ground Control Station, is software designed for various operatio
   - Map data processing, flight route analysis,
   - Geofence (If necessary, create a no-fly zone)
 
-### 1.3. 드론별 GCS 현황
+### 1.3. Status of GCS by drone.
 |ardupilot|px4|dji|
 |------|---|---|
 |mission planner|qground control|ground station|
