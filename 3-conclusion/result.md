@@ -24,7 +24,7 @@
 
 ### 1. Issue Commits
 
-| No. | 취약점  | 링크  |
+| No. | Vulnerability  | link  |
 |---|---|---|
 | 1 | [PX4] Bug Found in msgID #332 mavlink protocol BOF  | https://github.com/PX4/PX4-Autopilot/issues/18369  |
 | 2 | [PX4] Bug Found in msgID #147 mavlink protocol OOB | https://github.com/PX4/PX4-Autopilot/issues/18385  |
