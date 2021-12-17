@@ -144,7 +144,7 @@ In the QGC program, the functions implemented with GUI were analyzed to find vul
 Since QGC also uses the same mavlink protocol as PX4, it was able to find vulnerabilities in the three functions using the [fuzzer](https://github.com/BOB4Drone/4D-Fuzzer) that was previously made.
 
 #### 3.2.2. QGC With AFL++
-We used AFL++ for code coverage-based fuzzing. First, since AFL++ basically performs purging using file I/O, we changed `afl-forkserver.c` to use UDP as follows.   
+We used AFL++ for code coverage-based fuzzing. First, since AFL++ basically performs fuzzing using file I/O, we changed `afl-forkserver.c` to use UDP as follows.   
 ```
 int client_socket;
     struct sockaddr_in serverAddress;
@@ -173,7 +173,7 @@ int client_socket;
     // socket close
     close(client_socket);
 ```   
-Afterwards, he modified Makefile and changed compiler to apl-g++ to conduct purging. However, three problems arise if we proceed this way.
+Afterwards, he modified Makefile and changed compiler to apl-g++ to conduct fuzzing. However, three problems arise if we proceed this way.
 1. AFL sends packets first before QGC is turned on.
 2. If you do not receive Heartbeat, you do not receive other packets.
 3. AFL can be measured only when the program is terminated.
