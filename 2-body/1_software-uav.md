@@ -24,13 +24,13 @@
       - [1.5.1.5. Microservice Fuzzer](#1515-microservice-fuzzer)
       - [1.5.1.6. PX4 with AFL](#1516-px4-with-afl)
       - [1.5.1.7. GPS Fuzzer](#1516-gps-fuzzer)
-    - [1.5.2. Fuzzing using serial communication.
-](#152-Fuzzing-using-serial-communication.)
+    - [1.5.2. Fuzzing using serial communication
+](#152-Fuzzing-using-serial-communication)
   - [1.6. Reference](#16-Reference)
 - [2. Mavros](#2-mavros)
   - [2.1. Introduction](#21-Introduction)
-  - [2.2. Analysis Environment Setting.](#22-Analysis-Environment-Setting.)
-  - [2.3. Vulnerability analysis methodology.](#23-Vulnerability-analysis-methodology.)
+  - [2.2. Analysis Environment Setting](#22-Analysis-Environment-Setting)
+  - [2.3. Vulnerability analysis methodology](#23-Vulnerability-analysis-methodology)
     - [2.3.1. Vulnerability analysis through fuzzing](#231-Vulnerability-analysis-through-fuzzing)
 - - -
 
