@@ -127,8 +127,8 @@ jdk, Python, etc. should be installed.
 ```
 $ bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
 ```
-이후 원하는 시뮬레이터를 지정해서 make를 진행한다.   
-시뮬레이터는 jMAVSim, Gazebo 등이 있으며 공식 문서는 Gazebo를 추천한다.   
+After that, the desired simulator is designated and make.
+Simulators include jMAVSim and Gazebo, and official documents recommend Gazebo. 
 ```
 Start JMavSim with Address Sanitizer(default vehicle model)
 $ make px4_sitl jmavsim PX4_BUILD_TYPE=0 PX4_ASAN=1
