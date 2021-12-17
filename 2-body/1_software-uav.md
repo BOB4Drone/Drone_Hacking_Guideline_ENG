@@ -134,7 +134,7 @@ Start JMavSim with Address Sanitizer(default vehicle model)
 $ make px4_sitl jmavsim PX4_BUILD_TYPE=0 PX4_ASAN=1
 ```
 #### 1.3.2. PX4 Docker Build
-PX4 is provided with a pre-built container with all development environments set. If you use [the container provided](https://github.com/PX4/PX4-containers/blob/master/README.md#container-hierarchy), you can easily attempt purging.
+PX4 is provided with a pre-built container with all development environments set. If you use [the container provided](https://github.com/PX4/PX4-containers/blob/master/README.md#container-hierarchy), you can easily attempt fuzzing.
 First, the docker must be installed with the instructions below.
 Next, execute an instruction to set the authority.
 
@@ -183,7 +183,7 @@ All of these parts were analyzed and a new Fuzzer was developed to target this p
 ![img_04](../img/dfd-2.png)
 ### 1.5. Vulnerability Analysis Methodology
 #### 1.5.1. Developing a Fuzzer
-We developed fuzzers by analyzing PX4 source code auditioning, and we decided to increase the scope of mutation or purging according to the protocol.
+We developed fuzzers by analyzing PX4 source code auditioning, and we decided to increase the scope of mutation or fuzzing according to the protocol.
 As it was upgraded in this way, additional vulnerabilities were found.
 ![img_05](../img/fcs-fuzzer.png)
 ##### 1.5.1.1 Setting Input Vector
@@ -195,7 +195,7 @@ The Input value used to process the state of the drone is MAVLink Protocol. The 
 
 ![image](../img/mavlink_data.png)
 ##### 1.5.1.3 Fuzzing Environment
-As a result of auditioning the source code to find a function that processes the MAVLink Protocol, it was confirmed that packets were processed by MSG_ID through case syntax in ["mavlink_receiver.cpp"](https://github.com/PX4/PX4-Autopilot/blob/master/src/modules/mavlink/mavlink_receiver.cpp#L115) starting with ["mavlink_main.cpp"](https://github.com/PX4/PX4-Autopilot/blob/master/src/modules/mavlink/mavlink_main.cpp) on PX4. In addition, PX4 confirmed that there was a virtual drone simulation called SITL and that it works in the same form as the picture below. It can be seen that this SITL can transmit the MAVLink Packet to 18570 port via UDP to "mavlink_main.cpp" that processes the MAVLink Protocol. So we proceeded with purging targeting mavlink_main.cpp -> mavlink_receiver.cpp through SILT.
+As a result of auditioning the source code to find a function that processes the MAVLink Protocol, it was confirmed that packets were processed by MSG_ID through case syntax in ["mavlink_receiver.cpp"](https://github.com/PX4/PX4-Autopilot/blob/master/src/modules/mavlink/mavlink_receiver.cpp#L115) starting with ["mavlink_main.cpp"](https://github.com/PX4/PX4-Autopilot/blob/master/src/modules/mavlink/mavlink_main.cpp) on PX4. In addition, PX4 confirmed that there was a virtual drone simulation called SITL and that it works in the same form as the picture below. It can be seen that this SITL can transmit the MAVLink Packet to 18570 port via UDP to "mavlink_main.cpp" that processes the MAVLink Protocol. So we proceeded with fuzzing targeting mavlink_main.cpp -> mavlink_receiver.cpp through SILT.
 
 ![image](https://docs.px4.io/master/assets/img/px4_sitl_overview.d5d197f2.svg)
 ##### 1.5.1.4 Mavlink Fuzzer
@@ -245,7 +245,7 @@ As a result of auditioning the source code to find a function that processes the
 * First, we identified the structure of the UBX protocol.
     ![image](https://user-images.githubusercontent.com/91944211/145886738-35bb2e9d-0fc5-4339-9ebb-55ecbc9007c7.png)
 * It was difficult to generate and send packets directly because they had to receive input through the GPS module.
-* Therefore, a purging module was manufactured to mutate the input GPS value.
+* Therefore, a fuzzing module was manufactured to mutate the input GPS value.
 
     mutation code
     ```
@@ -285,7 +285,7 @@ As a result of auditioning the source code to find a function that processes the
     }
     ```
     
-    Puzzing module code - When executing the module, the global variable was turned into True and purged.
+    fuzzing module code - When executing the module, the global variable was turned into True and fuzzed.
 
     ```
     #include <px4_platform_common/log.h>
@@ -304,7 +304,7 @@ As a result of auditioning the source code to find a function that processes the
     }
     ```
     
-    * As a result of executing the purging module, it was confirmed that the mutated gps values entered normally.
+    * As a result of executing the fuzzing module, it was confirmed that the mutated gps values entered normally.
 
     
         ![image](https://user-images.githubusercontent.com/91944211/145886678-ccd55200-7e0c-4fb4-ad5f-4040bc73aeb7.png)
