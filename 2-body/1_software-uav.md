@@ -23,7 +23,7 @@
       - [1.5.1.4. Mavlink Fuzzer](#1514-mavlink-fuzzer)
       - [1.5.1.5. Microservice Fuzzer](#1515-microservice-fuzzer)
       - [1.5.1.6. PX4 with AFL](#1516-px4-with-afl)
-      - [1.5.1.7. GPS Fuzzer](#1516-gps-fuzzer)
+      - [1.5.1.7. GPS Fuzzer](#1517-gps-fuzzer)
     - [1.5.2. Fuzzing using serial communication
 ](#152-Fuzzing-using-serial-communication)
   - [1.6. Reference](#16-Reference)
