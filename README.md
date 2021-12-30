@@ -21,7 +21,7 @@ In addition, the patching work on the issue was completed by reporting so that t
 
 > KITRI BoB 10th | vulnerability analysis track | 4-Drone
 
-- Mentor: Park Chunseong, Kang Inwook.
+- Mentor: Park Chun Sung, Kang Inwook.
 - PL(Project Leader): Won Yohan.
 - Mentee: PM Lee Junoh, [Kyeong Kyuchang](https://github.com/l3u9), [Kim Donghyun](https://github.com/jjanguu), [Ryu Hyeongho](https://github.com/Ryuuuuu), [Choi Subin](https://github.com/dubini0), Kim Jisoo.
 
